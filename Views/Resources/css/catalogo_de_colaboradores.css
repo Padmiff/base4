@@ -1,0 +1,60 @@
+.step-hidden {
+  display: none;
+}
+
+
+.form-step:not(.form-step-active) {
+  display: none;
+}
+
+
+/* Estilo para la sección de la vista previa */
+#preview {
+  display: none; /* Por defecto oculto */
+  padding: 20px;
+  border: 1px solid #ccc;
+  margin-top: 20px;
+}
+
+#preview h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+#preview p {
+  margin-bottom: 5px;
+}
+
+#preview table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+#preview table, #preview th, #preview td {
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+
+/* Estilo para botones en la vista previa */
+#preview button {
+  margin-top: 15px;
+  margin-right: 10px;
+}
+
+/* Ajustes adicionales según sea necesario */
+/* Animación para mostrar la vista previa */
+#preview {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  0% {
+      opacity: 0;
+      transform: translateY(-10px);
+  }
+  100% {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
