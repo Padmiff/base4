@@ -1,10 +1,43 @@
-<div id="tableExample3" data-list='{"valueNames":["foto","No","name","app","apm","email","tel","rold","rol"],"page":10,"pagination":true}'>
+<style>
+    .alert-fixed {
+        position: fixed;
+        top: 60px;
+        right: 20px;
+        z-index: 9999;
+        width: 400px;
+        opacity: 1;
+        transition: opacity 0.5s ease;
+    }
+</style>
+<?php
+// Verifica si se ha solicitado bloquear un empleado
+if (isset($_GET['action']) && $_GET['action'] === 'block' && isset($_GET['idCliente'])) {
+    $idCliente = $_GET['idCliente'];
+
+    // Llama al método para bloquear el empleado
+    try {
+        ClientsController::blockclient($idCliente);
+        echo
+        '<div id="alertBlock" class="alert-fixed alert alert-success border-0 d-flex align-items-center" role="alert">
+            <div class="bg-success me-3 icon-item"><span class="fas fa-check-circle text-white fs-6"></span></div>
+            <p class="mb-0 flex-1">El usuario ha sido bloqueado correctamente.</p><button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>';
+    } catch (Exception $e) {
+        echo
+        '<div id="alertBlock" class="alert-fixed alert alert-danger border-0 d-flex align-items-center alert-fixed" role="alert">
+            <div class="bg-danger me-3 icon-item"><span class="fas fa-times-circle text-white fs-6"></span></div>
+            <p class="mb-0 flex-1">Error al bloquear al usuario: ' . $e->getMessage() . '</p><button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>';
+    }
+}
+?>
+<div id="tableExample3" data-list='{"valueNames":["foto","name","estado","ciudad","CP","fechare","fecha"],"page":10,"pagination":true}'>
     <div class="row justify-content-end g-0 mt-4">
         <ul class="nav nav-tabs mb-1" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
                 <a href="Empleados">
                     <button class="nav-link" id="activos-tab" data-bs-toggle="tab" data-bs-target="#activos" type="button" role="tab" aria-controls="activos" aria-selected="true">
-                        Empleados</button>
+                        Colaboradores</button>
                 </a>
             </li>
             <li class="nav-item" role="presentation">
@@ -42,11 +75,11 @@
                         <tr>
                             <th class="text-900 sort" data-sort="foto">Foto</th>
                             <th class="text-900 sort" data-sort="name">Nombre</th>
-                            <th class="text-900 sort" data-sort="apm">Estado</th>
-                            <th class="text-900 sort" data-sort="apm">Ciudad</th>
-                            <th class="text-900 sort" data-sort="email">Codigo Postal</th>
-                            <th class="text-900 sort" data-sort="email">Fecha de registro</th>
-                            <th class="text-900 sort" data-sort="rol">Fecha de ultima Actividad</th>
+                            <th class="text-900 sort" data-sort="estado">Estado</th>
+                            <th class="text-900 sort" data-sort="ciudad">Ciudad</th>
+                            <th class="text-900 sort" data-sort="CP">Codigo Postal</th>
+                            <th class="text-900 sort" data-sort="fechare">Fecha de registro</th>
+                            <th class="text-900 sort" data-sort="fecha">Fecha de ultima Actividad</th>
                             <th></th>
                             <th class="text-900 sort">Acciones</th>
                         </tr>
@@ -59,23 +92,23 @@
                                 foreach ($usuarios as $usuario) {
                         ?>
                                     <tr>
-                                        <td class="name"><?php echo htmlspecialchars($usuario['foto']); ?></td>
-                                        <td class="nombre">
+                                        <td class="foto"><?php echo htmlspecialchars($usuario['foto']); ?></td>
+                                        <td class="name">
                                             <a href="Cliente?idCliente=<?php echo htmlspecialchars($usuario['idCliente']); ?>">
                                                 <?php echo htmlspecialchars($usuario['nombreCliente'] . ' ' . $usuario['apellidoPaterno'] . ' ' . $usuario['apellidoMaterno']); ?>
                                             </a>
                                         </td>
-                                        <td class="rol"><?php echo htmlspecialchars($usuario['estado']); ?></td>
-                                        <td class="rol"><?php echo htmlspecialchars($usuario['ciudad']); ?></td>
-                                        <td class="rol"><?php echo htmlspecialchars($usuario['codigoPostal']); ?></td>
-                                        <td class="rol"><?php echo htmlspecialchars($usuario['fechaRegistro']); ?></td>
-                                        <td class="rol"><?php echo htmlspecialchars($usuario['fechaUltimaActividad']); ?></td>
+                                        <td class="estado"><?php echo htmlspecialchars($usuario['estado']); ?></td>
+                                        <td class="ciudad"><?php echo htmlspecialchars($usuario['ciudad']); ?></td>
+                                        <td class="CP"><?php echo htmlspecialchars($usuario['codigoPostal']); ?></td>
+                                        <td class="fechare"><?php echo htmlspecialchars($usuario['fechaRegistro']); ?></td>
+                                        <td class="fecha"><?php echo htmlspecialchars($usuario['fechaUltimaActividad']); ?></td>
                                         <td><a href="">Editar permisos</a></td>
                                         <td>
                                             <a class="btn btn-info btn-actualizar" data-bs-target="#update" data-bs-toggle="modal" data-id="<?php echo htmlspecialchars($usuario['idCliente']); ?>">
                                                 <span class="fas fa-sync-alt"></span>
                                             </a>
-                                            <a class="btn btn-warning" href="../controller/users/lock.php?id=<?php echo htmlspecialchars($usuario['idCliente']); ?>" onclick="return confirm('¿Estás seguro de bloquear este usuario?');">
+                                            <a class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#bloquearModal<?php echo htmlspecialchars($usuario['idCliente']); ?>">
                                                 <span class="fas fa-lock"></span>
                                             </a>
                                         </td>
@@ -99,3 +132,26 @@
         </div>
     </div>
 </div>
+
+<?php foreach ($usuarios as $usuario) : ?>
+    <div class="modal fade" id="bloquearModal<?php echo htmlspecialchars($usuario['idCliente']); ?>" tabindex="-1" aria-labelledby="bloquearModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bloquearModalLabel">Confirmar Acción</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de bloquear a <?php echo htmlspecialchars($usuario['nombreCliente']); ?>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <a href="?action=block&idCliente=<?php echo htmlspecialchars($usuario['idCliente']); ?>">
+                        <button type="button" class="btn btn-warning">Bloquear</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endforeach; ?>
+<script src="Views/Resources/assets/js/alerts.js"></script>

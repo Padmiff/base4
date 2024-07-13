@@ -47,4 +47,34 @@ class ProvidersController
             echo 'Error al obtener proveedores: ' . $e->getMessage();
         }
     }
+
+    static public function blockprovider($idProveedor)
+    {
+        try {
+            BLproviders::BLblockprovider($idProveedor);
+        } catch (Exception $e) {
+            // Manejo de errores: Puedes redirigir a una página de error o mostrar un mensaje
+            echo 'Error al bloquear proveedor: ' . $e->getMessage();
+        }
+    }
+
+    static public function unlockprovider($idProveedor)
+    {
+        try {
+            BLproviders::BLunlockprovider($idProveedor);
+        } catch (Exception $e) {
+            // Manejo de errores: Puedes redirigir a una página de error o mostrar un mensaje
+            echo 'Error al desbloquear proveedor: ' . $e->getMessage();
+        }
+    }
+
+    static public function deleteprovider($idProveedor)
+    {
+        try {
+            BLproviders::BLdeleteprovider($idProveedor);
+        } catch (Exception $e) {
+            // Manejo de errores: Puedes redirigir a una página de error o mostrar un mensaje
+            echo 'Error al eliminar proveedor: ' . $e->getMessage();
+        }
+    }
 }

@@ -45,4 +45,34 @@ class EmployeeController
             echo 'Error al obtener empleados: ' . $e->getMessage();
         }
     }
+
+    static public function blockEmployee($idEmpleado)
+    {
+        try {
+            BLemployee::BLblockemployee($idEmpleado);
+        } catch (Exception $e) {
+            // Manejo de errores: Puedes redirigir a una página de error o mostrar un mensaje
+            echo 'Error al bloquear empleado: ' . $e->getMessage();
+        }
+    }
+
+    static public function unlockEmployee($idEmpleado)
+    {
+        try {
+            BLemployee::BLunlockemployee($idEmpleado);
+        } catch (Exception $e) {
+            // Manejo de errores: Puedes redirigir a una página de error o mostrar un mensaje
+            echo 'Error al bloquear empleado: ' . $e->getMessage();
+        }
+    }
+
+    static public function deleteEmployee($idEmpleado)
+    {
+        try {
+            BLemployee::BLdeleteEmployee($idEmpleado);
+        } catch (Exception $e) {
+            // Manejo de errores: Puedes redirigir a una página de error o mostrar un mensaje
+            echo 'Error al bloquear empleado: ' . $e->getMessage();
+        }
+    }
 }

@@ -10,7 +10,7 @@ class ClientsController
             return $clienteActivos;  // Retorna los empleados activos obtenidos
         } catch (PDOException $e) {
             // Manejo de errores
-            echo 'Error al obtener empleados activos: ' . $e->getMessage();
+            echo 'Error al obtener clientes activos: ' . $e->getMessage();
         }
     }
 
@@ -22,7 +22,7 @@ class ClientsController
             return $clienteInactivos;  // Retorna los empleados activos obtenidos
         } catch (PDOException $e) {
             // Manejo de errores
-            echo 'Error al obtener empleados Bloqueados: ' . $e->getMessage();
+            echo 'Error al obtener clientes Bloqueados: ' . $e->getMessage();
         }
     }
 
@@ -42,5 +42,35 @@ class ClientsController
 
         return $cliente;  // Retorna los empleados activos obtenidos
 
+    }
+
+    static public function blockclient($idCliente)
+    {
+        try {
+            BLclients::BLblockclient($idCliente);
+        } catch (Exception $e) {
+            // Manejo de errores: Puedes redirigir a una página de error o mostrar un mensaje
+            echo 'Error al bloquear cliente: ' . $e->getMessage();
+        }
+    }
+
+    static public function unlockclient($idCliente)
+    {
+        try {
+            BLclients::BLunlockclient($idCliente);
+        } catch (Exception $e) {
+            // Manejo de errores: Puedes redirigir a una página de error o mostrar un mensaje
+            echo 'Error al desbloquear cliente: ' . $e->getMessage();
+        }
+    }
+
+    static public function deleteclient($idCliente)
+    {
+        try {
+            BLclients::BLdeleteclient($idCliente);
+        } catch (Exception $e) {
+            // Manejo de errores: Puedes redirigir a una página de error o mostrar un mensaje
+            echo 'Error al eliminar cliente: ' . $e->getMessage();
+        }
     }
 }

@@ -3,10 +3,20 @@ require_once "Connection.php";
 
 class BLclients
 {
+    private static $conn;
+
+    private static function getConnection()
+    {
+        if (!isset(self::$conn)) {
+            self::$conn = Connection::connectionBD();
+        }
+        return self::$conn;
+    }
+
     static public function getClientActive()
     {
         try {
-            $conn = Connection::connectionBD();  // Obtiene la conexión a la base de datos
+            $conn = self::getConnection();
 
             $sql = "SELECT * FROM client WHERE estadoCuenta = 'Activo'";
 
@@ -25,7 +35,7 @@ class BLclients
     static public function getClientInactive()
     {
         try {
-            $conn = Connection::connectionBD();  // Obtiene la conexión a la base de datos
+            $conn = self::getConnection();
 
             $sql = "SELECT * FROM client WHERE estadoCuenta = 'Inactivo'";
 
@@ -43,10 +53,11 @@ class BLclients
     static public function BLgetClientAll()
     {
         try {
-            $conn = Connection::connectionBD();
-            $sql = "SELECT c.nombreCliente, c.apellidoPaterno, c.pais, c.estado, c.direccion, con.telefono, c.idCliente
-                    FROM client c
-                    LEFT JOIN contactocliente con ON c.idCliente = con.idCliente
+            $conn = self::getConnection();
+
+            $sql = "SELECT c.*, con.telefono
+                    FROM client as c
+                    LEFT JOIN contactocliente as con ON c.idCliente = con.idCliente
                     WHERE con.idTipoContato = 1 OR con.idTipoContato IS NULL";
 
             $stmt = $conn->query($sql);
@@ -62,10 +73,11 @@ class BLclients
     static public function BLgetClientbyId($idCliente)
     {
         try {
-            $conn = Connection::connectionBD(); // Obtener la conexión PDO
-            $sql = "SELECT c.nombre, c.apellidoPaterno, c.telefono, c.email, t.tipoContacto, c.horaAtencionSemana, c.horaAtencionFinseman
-                    FROM contactocliente c
-                    LEFT JOIN tipocontactocliente t ON c.idTipoContato = t.idTipoContacto
+            $conn = self::getConnection();
+
+            $sql = "SELECT c.*, t.tipoContacto
+                    FROM contactocliente as c
+                    LEFT JOIN tipocontactocliente as t ON c.idTipoContato = t.idTipoContacto
                     WHERE c.idCliente = :idCliente";
 
             $stmt = $conn->prepare($sql);
@@ -78,6 +90,51 @@ class BLclients
         } catch (PDOException $e) {
             echo "Error al ejecutar la consulta: " . $e->getMessage();
             return [];
+        }
+    }
+
+    static public function BLblockclient($idCliente)
+    {
+        try {
+            $conn = self::getConnection();
+
+            $sql = "UPDATE client SET estadoCuenta = 'Inactivo' WHERE idCliente = :idCliente";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':idCliente', $idCliente, PDO::PARAM_INT);
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception('Error en la consulta: ' . $e->getMessage());
+        }
+    }
+
+    static public function BLunlockclient($idCliente)
+    {
+        try {
+            $conn = self::getConnection();
+
+            $sql = "UPDATE client SET estadoCuenta = 'Activo' WHERE idCliente = :idCliente";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':idCliente', $idCliente, PDO::PARAM_INT);
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception('Error en la consulta: ' . $e->getMessage());
+        }
+    }
+
+    static public function BLdeleteclient($idCliente)
+    {
+        try {
+            $conn = self::getConnection();
+
+            $sql = "UPDATE client SET estadoCuenta = 'Eliminado' WHERE idCliente = :idCliente";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':idCliente', $idCliente, PDO::PARAM_INT);
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception('Error en la consulta: ' . $e->getMessage());
         }
     }
 }
