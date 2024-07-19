@@ -1,35 +1,68 @@
-<!-- Contenido principal -->
-<div class="col-md-6 offset-md-3"> <!--<div class="col-12 order-xxl-3"> -->
-    <header class="mb-4">
-        <h1>F-GES-04 ENTRADA/SALIDA DE EQUIPO DE CÓMPUTO (COLABORADORES) REV. 01</h1>
-        <h5>Formato de captura para el control de Entrada y Salida de equipo de cómputo y/o electrónicos, para colaboradores</h5>
-    </header>
-    <!-- Main Content -->
-    <div class="main-content">
+<?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
+?>
+
+
+<head>
+    <link rel="stylesheet" href="Views/Resources/css/catalogo_de_colaboradores.css">
+    <link href="Views/Resources/vendors/dropzone/dropzone.css" rel="stylesheet" />
+    <!-- Contenido principal -->
+</head>
+
+<header class="mb-4">
+    <h1 class="text-primary">F-GES-04 Entrada/salida de equipo de cómputo (colaboradores) REV. 01</h1>
+    <h5 class="text-600">Formato de captura para el control de Entrada y Salida de equipo de cómputo y/o electrónicos, para colaboradores</h5>
+</header>
+<!-- Main Content -->
+
+<div class="card mb-3">
+    <div class="card-body bg-body-tertiary">
 
         <form id="form2" onsubmit="event.preventDefault(); showPreview();">
             <!-- Step 1 -->
             <div class="form-step form-step-active">
                 <div class="form-group">
-                    <label for="fecha_de_solicitud">Fecha de solicitud *</label>
-                    <input type="text" id="fecha_de_solicitud" name="fecha_de_solicitud" readonly>
+                    <label for="N_colaborador">N de colaborador<span class="text-danger"> *</span></label>
+                    <input type="text" class="form-control" id="N_colaborador" name="N_colaborador" placeholder="N de colaborador" value="<?php echo isset($_SESSION['N_colaborador']) ? $_SESSION['N_colaborador'] : ''; ?>" required readonly>
                 </div>
+
                 <div class="form-group">
-                    <label for="nombre_empresa">Nombre de la empresa*</label>
-                    <input type="text" class="form-control" id="Nombre_empresa" placeholder="Nombre de la empresa" required>
+                    <label for="departamento">Departamento<span class="text-danger"> *</span></label>
+                    <input type="text" class="form-control" id="departamento" name="departamento" placeholder="Departamento" value="<?php echo isset($_SESSION['departamento']) ? $_SESSION['departamento'] : ''; ?>" required readonly>
                 </div>
+
                 <div class="form-group">
-                    <label for="nombre_visitante">Nombre de visitante*</label>
-                    <input type="text" class="form-control" id="nombre_visitante" placeholder="Nombre de visitante" required>
+                    <label for="N_empleado">Nombre de colaborador<span class="text-danger"> *</span></label>
+                    <input type="text" class="form-control" id="N_empleado" name="N_empleado" placeholder="Nombre de colaborador" value="<?php echo isset($_SESSION['nombre']) ? $_SESSION['nombre'] : ''; ?>" required readonly>
                 </div>
+
                 <div class="form-group">
-                    <label for="correo">Correo electrónico*</label>
-                    <input type="email" class="form-control" id="correo" placeholder="Correo electrónico" required>
+                    <label for="Ape_paterno">Apellido paterno<span class="text-danger"> *</span></label>
+                    <input type="text" class="form-control" id="Ape_paterno" name="Ape_paterno" placeholder="Apellido paterno" value="<?php echo isset($_SESSION['Ape_paterno']) ? $_SESSION['Ape_paterno'] : ''; ?>" required readonly>
                 </div>
+
                 <div class="form-group">
-                    <label for="telefono">Número de teléfono*</label>
-                    <input type="tel" class="form-control" id="telefono" placeholder="Número de teléfono" required>
+                    <label for="Ape_materno">Apellido materno<span class="text-danger"> *</span></label>
+                    <input type="text" class="form-control" id="Ape_materno" name="Ape_materno" placeholder="Apellido materno" value="<?php echo isset($_SESSION['Ape_materno']) ? $_SESSION['Ape_materno'] : ''; ?>" required readonly>
                 </div>
+
+                <div class="form-group">
+                    <label for="correo">Correo electrónico<span class="text-danger"> *</span></label>
+                    <input type="email" class="form-control" id="correo" name="correo" placeholder="Correo electrónico" value="<?php echo isset($_SESSION['email']) ? $_SESSION['email'] : ''; ?>" required readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="telefono">Número de teléfono<span class="text-danger"> *</span></label>
+                    <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="Número de teléfono" value="<?php echo isset($_SESSION['telefono']) ? $_SESSION['telefono'] : ''; ?>" required readonly>
+                </div>
+                <br>
                 <button type="button" class="btn btn-primary" onclick="nextStep()">Siguiente</button>
             </div>
 
@@ -39,32 +72,34 @@
                     <label for="folio">Folio*</label>
                     <input type="text" class="form-control" id="folio" placeholder="Folio" required readonly>
                 </div>
+
+
+
                 <div class="form-group">
                     <label for="prioridad">Propiedad del equipo*</label>
-                    <select class="form-control" id="prioridad" required>
+                    <select class="form-select" id="prioridad" required>
                         <option>Harinera de Oriente</option>
                         <option>Uso personal</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="entrada_o_salida">¿Entrada o salida?*</label>
-                    <select class="form-control" id="entrada_o_salida" required>
+                    <select class="form-select" id="entrada_o_salida" required>
                         <option>Entrada</option>
                         <option>Salida</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="fecha_devolucion">Fecha de devolucion</label>
-                    <input type="date" id="fecha_devolucion" name="fecha_devolucion">
+                    <input class="form-control datetimepicker" type="date" id="fecha_devolucion" name="fecha_devolucion" type="text" placeholder="dd/mm/yy" data-options='{"disableMobile":true}' />
+
                 </div>
                 <div class="form-group">
                     <label for="fines_utilizacion">Motivo *</label>
-                    <textarea rows="6" cols="50" id="fines_utilizacion" placeholder="Escribe aquí..." style="resize: none;"></textarea>
+                    <textarea class="form-control" rows="6" cols="50" id="fines_utilizacion" placeholder="Escribe aquí..." style="resize: none;"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="caracteristicas">Características *</label>
-                    <button type="button" onclick="addRow()">Agregar Fila</button>
-                    <br><br>
                     <table id="dynamicTable">
                         <thead>
                             <tr>
@@ -72,7 +107,6 @@
                                 <th>Marca</th>
                                 <th>Modelo</th>
                                 <th>Número de serie</th>
-                                <th>¿Este equipo pertenece a HO? *</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -91,24 +125,34 @@
                                 <td><input type="text" name="marca"></td>
                                 <td><input type="text" name="modelo"></td>
                                 <td><input type="text" name="numero_serie"></td>
-                                <td><input type="checkbox" name="pertenece_a_ho" value="si"></td>
                             </tr>
                         </tbody>
                     </table>
+                    <br>
+                    <button class="btn btn-falcon-default btn-sm me-1 mb-1" type="button" onclick="addRow()">Agregar Fila</button>
                 </div>
-                <div class="form-group">
-                    <label for="evidencia">Evidencia*</label>
-                    <form action="upload.php" class="dropzone dropzone-multiple" id="my-awesome-dropzone">
-                        <div class="dz-message" data-dz-message>
-                            <img class="me-2" src="../assets/img/icons/cloud-upload.svg" width="25" alt="" />
-                            Suelta tus archivos aquí o haz clic para seleccionar.
+
+                <label for="evidencia">Evidencia*</label>
+                <div class="dropzone dropzone-multiple p-0" data-dropzone="data-dropzone" data-options='{"url":"valid/url","maxFiles":null,"dictDefaultMessage":"Choose or Drop a file here"}'>
+                    <div class="fallback"><input type="file" name="file" multiple /></div>
+                    <div class="dz-preview dz-preview-single">
+                        <div class="dz-preview-cover dz-complete">
+                            <img class="dz-preview-img" src="Views/Resources/assets/img/generic/image-file-2.png" alt="..." data-dz-thumbnail="" />
+                            <a class="dz-remove text-danger" href="#!" data-dz-remove="data-dz-remove"><span class="fas fa-times"></span></a>
+                            <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress=""></span></div>
+                            <div class="dz-errormessage m-1"><span data-dz-errormessage="data-dz-errormessage"></span></div>
                         </div>
-                        <div class="fallback">
-                            <input name="file" type="file" multiple />
+                        <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress=""></span></div>
+                    </div>
+                    <div class="dz-message" data-dz-message="data-dz-message">
+                        <div class="dz-message-text">
+                            <img class="me-2" src="Views/Resources/assets/img/icons/cloud-upload.svg" width="25" alt="" />Drop your file here
                         </div>
-                        <div class="dz-preview dz-preview-multiple"></div> <!-- Aquí se mostrarán las vistas previas de los archivos -->
-                    </form>
+                    </div>
                 </div>
+
+
+                <br>
                 <button type="button" class="btn btn-primary" onclick="prevStep()">Anterior</button>
                 <button type="button" class="btn btn-primary" onclick="nextStep()">Siguiente</button>
             </div>
@@ -270,7 +314,6 @@
 </div>
 
 <!-- JavaScript Files -->
-<script defer src="Views/Resources/js/entrada_salida_de_equipo_visitantes.js"></script>
-
-
+<script defer src="Views/Resources/js/entrada_salida_de_equipo_colaboradores.js"></script>
 <script src="Views/Resources/vendors/dropzone/dropzone-min.js"></script>
+<script src="Views/Resources/js/dropzone-config.js"></script>

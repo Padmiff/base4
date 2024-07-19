@@ -1,10 +1,11 @@
-<!-- <link rel="stylesheet" href="Views/Resources/css/catalogo_de_colaboradores.css"> -->
-
-<!-- Contenido principal -->
-<div class="col-md-6 offset-md-3"> <!--<div class="col-12 order-xxl-3"> -->
+<head>
+    <link rel="stylesheet" href="Views/Resources/css/catalogo_de_colaboradores.css">
+    <!-- Contenido principal -->
+</head>
+<div class="col-12 order-xxl-3">
     <header class="mb-4">
-        <h1>F-GES-05 ENTRADA/SALIDA DE EQUIPO DE CÓMPUTO (VISITANTES) REV. 01</h1>
-        <h5>Formato de captura para el control de Entrada y Salida de equipo de cómputo y/o electrónicos, para visitantes</h5>
+        <h1 class="text-primary">F-GES-05 Entrada/salida de equipo de cómputo (visitantes) REV. 01</h1>
+        <h5 class="text-600">Formato de captura para el control de Entrada y Salida de equipo de cómputo y/o electrónicos, para visitantes</h5>
     </header>
     <!-- Main Content -->
 
