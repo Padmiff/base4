@@ -49,7 +49,7 @@ try {
     // Destinatario del correo
     $mail->setFrom('servicios@correo.base4.mx', 'base4');
     $mail->addAddress($correo, $N_colaborador); // Agregar destinatario
-    
+
     // Formato del correo HTML
     $mail->isHTML(true); // Formato HTML
     $mail->Subject = 'Solicitud de mercancía o servicio';
@@ -130,21 +130,21 @@ try {
                     </thead>
                     <tbody>";
 
-                    if (!empty($_POST['partida'])) {
-                        foreach ($_POST['partida'] as $index => $partida) {
-                            $cantidad = $_POST['cantidad'][$index] ?? '';
-                            $unidad = $_POST['unidad'][$index] ?? '';
-                            $descripcion = $_POST['descripcion'][$index] ?? '';
-                
-                            $emailContent .= "
+    if (!empty($_POST['partida'])) {
+        foreach ($_POST['partida'] as $index => $partida) {
+            $cantidad = $_POST['cantidad'][$index] ?? '';
+            $unidad = $_POST['unidad'][$index] ?? '';
+            $descripcion = $_POST['descripcion'][$index] ?? '';
+
+            $emailContent .= "
                             <tr>
                                 <td>$partida</td>
                                 <td>$cantidad</td>
                                 <td>$unidad</td>
                                 <td>$descripcion</td>
                             </tr>";
-                        }
-                    }
+        }
+    }
 
     $emailContent .= "
                     </tbody>
@@ -191,4 +191,3 @@ try {
     // Manejo de errores
     echo json_encode(['error' => "Error al enviar el correo: {$mail->ErrorInfo}"]); // Respuesta JSON
 }
-?>

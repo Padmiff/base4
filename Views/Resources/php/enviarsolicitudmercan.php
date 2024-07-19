@@ -1,4 +1,89 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require 'Connection.php';
+
+try {
+    $conn = Connection::connectionBD();
+} catch (Exception $e) {
+    echo json_encode(['error' => 'Error al conectar con la base de datos: ' . $e->getMessage()]);
+    exit;
+}
+
+try {
+    // Datos del formulario
+    $noEmpleado = $_POST['N_colaborador'];
+    $idDepartamento = $_POST['departamento'];
+    $nombreEmpleado = $_POST['N_empleado'];
+    $apellidoPaterno = $_POST['Ape_paterno'];
+    $apellidoMaterno = $_POST['Ape_materno'];
+    $emailEmpleado = $_POST['correo'];
+    $telefono = $_POST['telefono'];
+    $folio = $_POST['folio'];
+    $Prioridad = $_POST['Prioridad'];
+    $gestiona = $_POST['gestiona'];
+    $solicitando = $_POST['solicitando'];
+    $fecha_pedido = $_POST['fecha_pedido'];
+    $fecha_entrega = $_POST['fecha_entrega'];
+    $fines_utilizacion = $_POST['fines_utilizacion'];
+    $nombre_solicitud = $_POST['nombre_solicitud'];
+    $nombre_jefe = $_POST['nombre_jefe'];
+    $correo_jefe = $_POST['correo_jefe'];
+    $nombre_recibe = $_POST['nombre_recibe'];
+
+    $fecha_pedido = DateTime::createFromFormat('d/m/Y H:i:s', $fecha_pedido)->format('Y-m-d H:i:s');
+
+    // Insertar en la tabla 'soliMercaServi'
+    $stmt = $conn->prepare("INSERT INTO soliMercaServi (noEmpleado, idDepartamento, nombreEmpleado, apellidoPaterno, apellidoMaterno, emailEmpleado, telefono, folio, Prioridad, gestiona, fecha_pedido, fecha_entrega, fines_utilizacion, nombre_solicitud, firma_solicitud, nombre_jefe, correo_jefe, nombre_recibe, firma_recibe, solicitando, firma_jefe_recibe) 
+    VALUES (:noEmpleado, :idDepartamento, :nombreEmpleado, :apellidoPaterno, :apellidoMaterno, :emailEmpleado, :telefono, :folio, :Prioridad, :gestiona, :fecha_pedido, :fecha_entrega, :fines_utilizacion, :nombre_solicitud, 'Si', :nombre_jefe, :correo_jefe, :nombre_recibe, 'Si', :solicitando, 'Si')");
+    $stmt->bindParam(':noEmpleado', $noEmpleado);
+    $stmt->bindParam(':idDepartamento', $idDepartamento);
+    $stmt->bindParam(':nombreEmpleado', $nombreEmpleado);
+    $stmt->bindParam(':apellidoPaterno', $apellidoPaterno);
+    $stmt->bindParam(':apellidoMaterno', $apellidoMaterno);
+    $stmt->bindParam(':emailEmpleado', $emailEmpleado);
+    $stmt->bindParam(':telefono', $telefono);
+    $stmt->bindParam(':folio', $folio);
+    $stmt->bindParam(':Prioridad', $Prioridad);
+    $stmt->bindParam(':gestiona', $gestiona);
+    $stmt->bindParam(':solicitando', $solicitando);
+    $stmt->bindParam(':fecha_pedido', $fecha_pedido);
+    $stmt->bindParam(':fecha_entrega', $fecha_entrega);
+    $stmt->bindParam(':fines_utilizacion', $fines_utilizacion);
+    $stmt->bindParam(':nombre_solicitud', $nombre_solicitud);
+    $stmt->bindParam(':nombre_jefe', $nombre_jefe);
+    $stmt->bindParam(':correo_jefe', $correo_jefe);
+    $stmt->bindParam(':nombre_recibe', $nombre_recibe);
+    $stmt->execute();
+
+    // Obtener el ID de la última inserción
+    $soliMercaServi_id = $conn->lastInsertId();
+
+    // Insertar en la tabla 'mercancias_servicios'
+    foreach ($_POST['partida'] as $index => $partida) {
+        $cantidad = $_POST['cantidad'][$index];
+        $unidad = $_POST['unidad'][$index];
+        $descripcion = $_POST['descripcion'][$index];
+
+        $stmt = $conn->prepare("INSERT INTO mercancias_servicios (soliMercaServi_id, partida, cantidad, unidad, descripcion) VALUES (:soliMercaServi_id, :partida, :cantidad, :unidad, :descripcion)");
+        $stmt->bindParam(':soliMercaServi_id', $soliMercaServi_id);
+        $stmt->bindParam(':partida', $partida);
+        $stmt->bindParam(':cantidad', $cantidad);
+        $stmt->bindParam(':unidad', $unidad);
+        $stmt->bindParam(':descripcion', $descripcion);
+        $stmt->execute();
+    }
+
+    echo "Datos insertados correctamente.";
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+}
+
+$conn = null;
+
+
 // Importar las clases de PHPMailer y Dompdf al espacio de nombres global
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -14,9 +99,10 @@ $departamento = $_POST['departamento'] ?? '';
 $N_empleado = $_POST['N_empleado'] ?? '';
 $correo = $_POST['correo'] ?? '';
 $telefono = $_POST['telefono'] ?? '';
-$Folio = $_POST['Folio'] ?? '';
+$Folio = $_POST['folio'] ?? '';
 $Prioridad = $_POST['Prioridad'] ?? '';
 $gestiona = $_POST['gestiona'] ?? '';
+$solicitando = $_POST['solicitando'] ?? '';
 $fecha_pedido = $_POST['fecha_pedido'] ?? '';
 $fecha_entrega = $_POST['fecha_entrega'] ?? '';
 $fines_utilizacion = $_POST['fines_utilizacion'] ?? '';
@@ -24,6 +110,7 @@ $nombre_solicitud = $_POST['nombre_solicitud'] ?? '';
 $firma_solicitud = $_POST['firma_solicitud'] ?? '';
 $nombre_jefe = $_POST['nombre_jefe'] ?? '';
 $correo_jefe = $_POST['correo_jefe'] ?? '';
+$firma_jefe_recibe = $_POST['firma_jefe_recibe'] ?? '';
 $nombre_recibe = $_POST['nombre_recibe'] ?? '';
 $firma_recibe = $_POST['firma_recibe'] ?? '';
 
@@ -49,10 +136,11 @@ try {
     // Destinatario del correo
     $mail->setFrom('servicios@correo.base4.mx', 'base4');
     $mail->addAddress($correo, $N_colaborador); // Agregar destinatario
-    
+    $mail->addAddress($correo_jefe, $N_colaborador);
+
     // Formato del correo HTML
     $mail->isHTML(true); // Formato HTML
-    $mail->Subject = 'Solicitud de mercancía o servicio';
+    $mail->Subject = 'Solicitud de mercancia o servicio';
 
     // Estilos CSS para el correo electrónico
     $emailStyles = "
@@ -115,6 +203,7 @@ try {
                 <p><strong>Folio:</strong> $Folio</p>
                 <p><strong>Prioridad de atención:</strong> $Prioridad</p>
                 <p><strong>Departamento que gestionará la compra:</strong> $gestiona</p>
+                <p><strong>Solicitando:</strong> $solicitando</p>
                 <p><strong>Fecha de pedido:</strong> $fecha_pedido</p>
                 <p><strong>Fecha de entrega:</strong> $fecha_entrega</p>
                 <hr>
@@ -130,21 +219,21 @@ try {
                     </thead>
                     <tbody>";
 
-                    if (!empty($_POST['partida'])) {
-                        foreach ($_POST['partida'] as $index => $partida) {
-                            $cantidad = $_POST['cantidad'][$index] ?? '';
-                            $unidad = $_POST['unidad'][$index] ?? '';
-                            $descripcion = $_POST['descripcion'][$index] ?? '';
-                
-                            $emailContent .= "
+    if (!empty($_POST['partida'])) {
+        foreach ($_POST['partida'] as $index => $partida) {
+            $cantidad = $_POST['cantidad'][$index] ?? '';
+            $unidad = $_POST['unidad'][$index] ?? '';
+            $descripcion = $_POST['descripcion'][$index] ?? '';
+
+            $emailContent .= "
                             <tr>
                                 <td>$partida</td>
                                 <td>$cantidad</td>
                                 <td>$unidad</td>
                                 <td>$descripcion</td>
                             </tr>";
-                        }
-                    }
+        }
+    }
 
     $emailContent .= "
                     </tbody>
@@ -157,6 +246,7 @@ try {
                 <hr>
                 <p><strong>Nombre del Jefe inmediato:</strong> $nombre_jefe</p>
                 <p><strong>Correo electrónico del Jefe inmediato:</strong> $correo_jefe</p>
+                <p><strong>Firma del Jefe inmediato de la persona que hace la solicitud:</strong> $firma_jefe_recibe</p>
                 <hr>
                 <p><strong>Nombre de quién recibe la solicitud en el Departamento de compras:</strong> $nombre_recibe</p>
                 <p><strong>Firma de quién recibe la solicitud en el Departamento de compras:</strong><br>$firma_recibe</p>
@@ -191,4 +281,3 @@ try {
     // Manejo de errores
     echo json_encode(['error' => "Error al enviar el correo: {$mail->ErrorInfo}"]); // Respuesta JSON
 }
-?>

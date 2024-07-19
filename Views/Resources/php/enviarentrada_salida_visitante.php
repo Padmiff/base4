@@ -56,7 +56,7 @@ try {
     // Destinatario del correo
     $mail->setFrom('servicios@correo.base4.mx', 'base4');
     $mail->addAddress($correo, $nombre_empresa); // Agregar destinatario
-    
+
     // Formato del correo HTML
     $mail->isHTML(true); // Formato HTML
     $mail->Subject = 'Entrada/salida de equipo de computo (visitantes)';
@@ -148,14 +148,14 @@ try {
                     </thead>
                     <tbody>";
 
-                    if (!empty($_POST['tipo_equipo'])) {
-                        foreach ($_POST['tipo_equipo'] as $index => $tipo_equipo) {
-                            $marca = $_POST['marca'][$index] ?? '';
-                            $modelo = $_POST['modelo'][$index] ?? '';
-                            $numero_serie = $_POST['numero_serie'][$index] ?? '';
-                            $pertenece_a_ho = $_POST['pertenece_a_ho'][$index] ?? '';
-                
-                            $emailContent .= "
+    if (!empty($_POST['tipo_equipo'])) {
+        foreach ($_POST['tipo_equipo'] as $index => $tipo_equipo) {
+            $marca = $_POST['marca'][$index] ?? '';
+            $modelo = $_POST['modelo'][$index] ?? '';
+            $numero_serie = $_POST['numero_serie'][$index] ?? '';
+            $pertenece_a_ho = $_POST['pertenece_a_ho'][$index] ?? '';
+
+            $emailContent .= "
                             <tr>
                                 <td>$tipo_equipo</td>
                                 <td>$marca</td>
@@ -163,8 +163,8 @@ try {
                                 <td>$numero_serie</td>
                                 <td>$pertenece_a_ho</td>
                             </tr>";
-                        }
-                    }
+        }
+    }
 
     $emailContent .= "
                     </tbody>
@@ -200,4 +200,3 @@ try {
     // Manejo de errores
     echo json_encode(['error' => "Error al enviar el correo: {$mail->ErrorInfo}"]); // Respuesta JSON
 }
-?>

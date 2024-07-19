@@ -98,7 +98,10 @@ $html = '
             <p><strong>Apellido materno:</strong> ' . $apellido_materno . '</p>
             <p><strong>Correo electrónico:</strong> ' . $correo . '</p>
             <p><strong>Número de contacto:</strong> ' . $numero . '</p>
-            <p><strong>Aviso de privacidad:</strong> ' . $aviso . '</p>
+            <p><strong>Aviso de privacidad:</strong> La empresa COMPAÑIA HARINERA DE ORIENTE S.A. DE C.V. con domicilio ubicado en PROLONGACIÓN HÉROES DE NACOZARI # 
+            8002 COLONIA ZONA INDUSTRIAL ANEXA A LA LOMA, C.P. 72230 PUEBLA, PUEBLA utilizará sus datos personales recabados con los siguientes fines: fines económicos, 
+            fines personales, fines laborales, fines sociales, fines educativos, fines bancarios, fines de marketing. Para mayor información sobre el tratamiento de sus 
+            datos personales usted puede acudir al siguiente domicilio: PROLONGACIÓN HÉROES DE NACOZARI # 8002 COLONIA ZONA INDUSTRIAL ANEXA A LA LOMA, C.P. 72230 PUEBLA, PUEBLA.</p>
         </div>
         <div class="footer">
             <p>Este es un mensaje automatizado. Por favor, no respondas a este correo.</p>
@@ -208,7 +211,10 @@ try {
             <p><strong>Apellido materno:</strong> ' . $apellido_materno . '</p>
             <p><strong>Correo electrónico:</strong> ' . $correo . '</p>
             <p><strong>Número de contacto:</strong> ' . $numero . '</p>
-            <p><strong>Aviso de privacidad:</strong>' . $aviso . '</p>
+            <p><strong>Aviso de privacidad:</strong> La empresa COMPAÑIA HARINERA DE ORIENTE S.A. DE C.V. con domicilio ubicado en PROLONGACIÓN HÉROES DE NACOZARI # 
+            8002 COLONIA ZONA INDUSTRIAL ANEXA A LA LOMA, C.P. 72230 PUEBLA, PUEBLA utilizará sus datos personales recabados con los siguientes fines: fines económicos, 
+            fines personales, fines laborales, fines sociales, fines educativos, fines bancarios, fines de marketing. Para mayor información sobre el tratamiento de sus 
+            datos personales usted puede acudir al siguiente domicilio: PROLONGACIÓN HÉROES DE NACOZARI # 8002 COLONIA ZONA INDUSTRIAL ANEXA A LA LOMA, C.P. 72230 PUEBLA, PUEBLA.</p>
             <div class="footer">
                 <p>Este es un mensaje automatizado. Por favor, no respondas a este correo.</p>
             </div>
@@ -224,4 +230,3 @@ try {
 } catch (Exception $e) {
     echo "Error al enviar el mensaje: {$mail->ErrorInfo}";
 }
-?>

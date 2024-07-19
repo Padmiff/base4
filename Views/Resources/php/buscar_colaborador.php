@@ -1,52 +1,35 @@
 <?php
-// Incluye archivos necesarios y establece la conexión si es necesario
-require 'conexion.php';
+// Incluye la conexión a la base de datos
+require 'Connection.php';
 
-// Función para obtener datos del empleado por número de colaborador
-function getEmployeeData($numColaborador) {
-    global $conn;
+// Establecer el encabezado para JSON
+header('Content-Type: application/json');
 
-    // Preparar la consulta SQL con PDO
-    $sql = "SELECT departamento, nombrecolaborador, apellidopaterno, apellidomaterno, emailcolaborador, numero_telefono 
-            FROM colaboradores 
-            WHERE noColaborador = :numColaborador";
+// Conectar a la base de datos
+try {
+    $conn = Connection::connectionBD();
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'message' => 'Conexión a la base de datos fallida: ' . $e->getMessage()]);
+    exit;
+}
 
-    // Preparar la sentencia
-    $stmt = $conn->prepare($sql);
+// Obtener el número de empleado desde la solicitud POST
+if (isset($_POST['N_empleado'])) {
+    $N_empleado = $_POST['N_empleado'];
 
-    // Vincular parámetros
-    $stmt->bindValue(':numColaborador', $numColaborador, PDO::PARAM_INT);
-
-    // Ejecutar consulta
+    // Consulta para obtener los datos específicos del empleado
+    $query = "SELECT nombreEmpleado, apellidoPaterno, apellidoMaterno, emailEmpleado, telefono, idDepartamento FROM empleado WHERE noEmpleado = :noEmpleado";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':noEmpleado', $N_empleado, PDO::PARAM_STR);
     $stmt->execute();
 
-    // Obtener resultado
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($result !== false) {
-        // Devolver array con los datos
-        return $result;
+    if ($result) {
+        echo json_encode(['success' => true, 'data' => $result]);
     } else {
-        return false; // Devolver falso si no se encontraron resultados
+        echo json_encode(['success' => false, 'message' => 'Colaborador no encontrado.']);
     }
+} else {
+    echo json_encode(['success' => false, 'message' => 'Campo N_empleado no definido en la solicitud POST.']);
 }
-
-// Ejemplo de uso:
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $numColaborador = $_POST['N_empleado']; // Nombre del input en tu formulario
-
-    // Llamar a la función para obtener los datos del empleado
-    $employeeData = getEmployeeData($numColaborador);
-
-    // Si se encontraron datos, mostrarlos o usarlos según necesites
-    if ($employeeData) {
-        // Devolver los datos como JSON (o utilizarlos de otra manera)
-        echo json_encode($employeeData);
-    } else {
-        echo json_encode(['error' => 'No se encontraron datos para el número de colaborador proporcionado.']);
-    }
-}
-
-// Cerrar conexión
-$conn = null;
-?>
