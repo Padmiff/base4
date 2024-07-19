@@ -23,7 +23,7 @@
                             <th class="text-900 sort" data-sort="pais">País</th>
                             <th class="text-900 sort" data-sort="estado">Estado</th>
                             <th class="text-900 sort" data-sort="direccion">Dirección</th>
-                            <th class="text-900 sort" data-sort="telefono">Teléfono</th>
+                            <th class="text-900 sort" data-sort="telefono">Informacion</th>
                         </tr>
                     </thead>
                     <tbody class="list">
@@ -42,7 +42,7 @@
                                         <td class="align-middle white-space-nowrap pais"><?php echo htmlspecialchars($usuario['pais']); ?></td>
                                         <td class="estado"><?php echo htmlspecialchars($usuario['estado']); ?></td>
                                         <td class="direccion"><?php echo htmlspecialchars($usuario['direccion']); ?></td>
-                                        <td class="telefono"><?php echo htmlspecialchars($usuario['telefono']); ?></td>
+                                        <td class="telefono"><?php echo htmlspecialchars($usuario['informacion']); ?></td>
                                     </tr>
                         <?php
                                 }

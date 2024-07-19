@@ -1,5 +1,4 @@
 <?php
-
 // Obtener el idCliente de la URL
 $idCliente = isset($_GET['idCliente']) ? $_GET['idCliente'] : '';
 
@@ -16,55 +15,67 @@ if ($idCliente) {
     // Verificar si hay resultados
     if (!$cliente) {
         // Mensaje de alerta si no hay contactos
-        $mensaje = '<div class="alert alert-danger" role="alert">
-                      <h4 class="alert-heading fw-semi-bold">Cliente sin contactos</h4>
-                      <p>El cliente no tiene contactos registrados.</p>
-                      <hr />
-                      <p class="mb-0">Aún no se han registrado contactos para este cliente.</p>
+        $mensaje = '<div class="alert alert-danger text-center" role="alert">
+                      El cliente no tiene contactos registrados.
                     </div>';
     }
 } else {
-    // Redirigir o manejar el error si no se proporciona idCliente
-    // Ejemplo: header('Location: error.php');
-    // exit();
+    $mensaje = '<div class="alert alert-danger" role="alert">
+                      <h4 class="alert-heading fw-semi-bold">Contacto no encontrado</h4>
+                      <p>No se encontró información para el cliente con el ID proporcionado.</p>
+                      <hr />
+                      <p class="mb-0">Verifica el ID del cliente e intenta de nuevo.</p>
+                    </div>';
 }
 ?>
 
 <div class="card-title text-white mt-4">
-    <h3 class="mb-0">Información Clientes</h3>
+    <h3 class="mt-3">Información Clientes</h3>
 </div>
-<div id="tableExample3" data-list='{"valueNames":["nombre","app","email","tel","tipoContacto"],"page":10,"pagination":true}'>
-    <div class="tab-content mt-4">
+
+<div id="tableExample3" data-list='{"valueNames":["nombre","email","tel","tipoContacto","semanada","finsemana","notas"],"page":10,"pagination":true}'>
+    <div class="tab-content mt-3">
+        <div class="d-flex align-items-center justify-content-end my-3">
+            <div data-bs-target="#agregar" data-id="<?php echo htmlspecialchars($idCliente); ?>" data-bs-toggle="modal">
+                <button class="btn btn-falcon-success btn-sm btn-id" type="button">
+                    <span class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span>
+                    <span class="ms-1">Agregar</span>
+                </button>
+            </div>
+        </div>
         <div class="table-responsive scrollbar">
-            <?php if ($mensaje) : ?>
-                <?php echo $mensaje; ?>
-            <?php else : ?>
-                <table class="table table-bordered table-striped fs-10 mb-0">
-                    <thead class="bg-300">
-                        <tr>
-                            <th class="text-900 sort" data-sort="nombre">Nombre</th>
-                            <th class="text-900 sort" data-sort="email">Email</th>
-                            <th class="text-900 sort" data-sort="tel">Teléfono</th>
-                            <th class="text-900 sort" data-sort="tipoContacto">Tipo de Contacto</th>
-                            <th class="text-900 sort" data-sort="tipoContacto">HS ATT Semana</th>
-                            <th class="text-900 sort" data-sort="tipoContacto">HS ATT Finsemana</th>
-                        </tr>
-                    </thead>
-                    <tbody class="list">
+            <table class="table table-bordered table-striped fs-10 mb-0">
+                <thead class="bg-300">
+                    <tr>
+                        <th class="text-900 sort" data-sort="nombre">Nombre</th>
+                        <th class="text-900 sort" data-sort="email">Email</th>
+                        <th class="text-900 sort" data-sort="tel">Teléfono</th>
+                        <th class="text-900 sort" data-sort="tipoContacto">Tipo de Contacto</th>
+                        <th class="text-900 sort" data-sort="semanada">HS ATT Semana</th>
+                        <th class="text-900 sort" data-sort="finsemana">HS ATT Finsemana</th>
+                        <th class="text-900 sort" data-sort="notas">Notas</th>
+                    </tr>
+                </thead>
+                <tbody class="list">
+                    <?php if ($cliente) : ?>
                         <?php foreach ($cliente as $row) : ?>
                             <tr>
                                 <td class="align-middle white-space-nowrap nombre">
-                                    <?php echo htmlspecialchars($row['nombre'] . ' ' . $row['apellidoPaterno']); ?>
+                                    <?php echo htmlspecialchars($row['nombre'] . ' ' . $row['apellidoPaterno'] . ' ' . $row['apellidoMaterno']); ?>
                                 </td>
                                 <td class="align-middle white-space-nowrap email"><?php echo htmlspecialchars($row['email']); ?></td>
                                 <td class="tel"><?php echo htmlspecialchars($row['telefono']); ?></td>
                                 <td class="tipoContacto"><?php echo htmlspecialchars($row['tipoContacto']); ?></td>
-                                <td class="tipoContacto"><?php echo htmlspecialchars($row['horaAtencionSemana']); ?></td>
-                                <td class="tipoContacto"><?php echo htmlspecialchars($row['horaAtencionFinseman']); ?></td>
+                                <td class="semanada"><?php echo htmlspecialchars($row['horaAtencionSemana']); ?></td>
+                                <td class="finsemana"><?php echo htmlspecialchars($row['horaAtencionFinseman']); ?></td>
+                                <td class="notas"><?php echo htmlspecialchars($row['notas']); ?></td>
                             </tr>
                         <?php endforeach; ?>
-                    </tbody>
-                </table>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+            <?php if ($mensaje) : ?>
+                <?php echo $mensaje; ?>
             <?php endif; ?>
         </div>
         <div class="d-flex justify-content-center mt-3">
@@ -78,3 +89,70 @@ if ($idCliente) {
         </div>
     </div>
 </div>
+
+<!--  Modal para insertar un contacto nuevo-->
+<div class="modal fade" id="agregar" tabindex="-1" role="dialog" aria-labelledby="agregarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body p-4">
+                <div class="row text-start justify-content-between align-items-center mb-2">
+                    <div class="col-auto">
+                        <h5 id="agregarModalLabel">Nuevo Contacto</h5>
+                    </div>
+                    <button class="btn-close mb-1" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <?php ClientsController::postInsertContactos() ?>
+                <form action="" id="formAgregarUsuario" method="post">
+                    <input type="hidden" name="idCliente" id="idCliente_update">
+                    <div class="mb-3">
+                        <input class="form-control" type="text" name="nombre" placeholder="Nombre" required />
+                    </div>
+                    <div class="row gx-1 mb-2">
+                        <div class="col-sm-6 mb-1">
+                            <input class="form-control" type="text" name="apellidoPaterno" placeholder="Apellido Paterno" required />
+                        </div>
+                        <div class="col-sm-6">
+                            <input class="form-control" type="text" name="apellidoMaterno" placeholder="Apellido Materno" required />
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <input class="form-control" type="email" name="email" placeholder="Correo" required />
+                    </div>
+                    <div class="mb-3">
+                        <textarea class="form-control" name="notas" placeholder="Notas"></textarea>
+                    </div>
+                    <div class="row gx-1">
+                        <hr>
+                        <div class="col-sm-6 mb-1">
+                            <button class="btn btn-primary d-block mx-1 w-100" type="submit" name="registrar">Agregar</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <button class="btn btn-secondary d-block mx-1 w-100" type="reset">Restaurar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Obtener todos los botones de agregar contacto
+        var addContactButtons = document.querySelectorAll('[data-bs-target="#agregar"]');
+
+        // Iterar sobre cada botón de agregar contacto
+        addContactButtons.forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevenir el comportamiento por defecto del enlace
+
+                var idCliente = this.getAttribute('data-id');
+
+                // Asignar el valor de idCliente al campo oculto dentro del modal
+                var idClienteInput = document.getElementById('idCliente_update');
+                if (idClienteInput) {
+                    idClienteInput.value = idCliente;
+                }
+            });
+        });
+    });
+</script>

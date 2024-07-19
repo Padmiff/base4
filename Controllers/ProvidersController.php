@@ -77,4 +77,97 @@ class ProvidersController
             echo 'Error al eliminar proveedor: ' . $e->getMessage();
         }
     }
+
+    static public function postInsertProveedores()
+    {
+        if (isset($_POST['registrar'])) {
+            $datos = [
+                'nombreEmpresa' => $_POST['nombreEmpresa'],
+                'direccionProveedor' => $_POST['direccionProveedor'],
+                'ciudad' => $_POST['ciudad'],
+                'estado' => $_POST['estado'],
+                'codigoPostal' => $_POST['codigoPostal'],
+                'pais' => $_POST['pais'],
+                'fechaRegistro' => $_POST['fechaRegistro'],
+                'informacionProveedor' => $_POST['informacionProveedor'],
+                'logo' => $_POST['logo'],
+                'tipoProveedor' => $_POST['tipoProveedor'],
+                'notas' => $_POST['notas'],
+                'fechaUltimaActividad' => $_POST['fechaUltimaActividad'],
+                'estadoProveedor' => $_POST['estadoProveedor'],
+                'sitioWeb' => $_POST['sitioWeb'],
+                'rfc' => $_POST['rfc'],
+                'tipoBanco' => $_POST['tipoBanco'],
+                'cuentaBancaria' => $_POST['cuentaBancaria'],
+            ];
+            try {
+
+                BLproviders::BLpostInsertProviders($datos);
+
+                echo '<script>window.location.href = "Proveedores";</script>';
+                exit;
+            } catch (Exception $e) {
+
+                echo "Error: " . $e->getMessage();
+            }
+        }
+    }
+
+    static public function postUpdateProveedores()
+    {
+        if (isset($_POST['actualizar'])) {
+            $datos = [
+                'idProveedor' => $_POST['idProveedor'],
+                'nombreEmpresa' => $_POST['nombreEmpresa'],
+                'direccionProveedor' => $_POST['direccionProveedor'],
+                'ciudad' => $_POST['ciudad'],
+                'estado' => $_POST['estado'],
+                'codigoPostal' => $_POST['codigoPostal'],
+                'pais' => $_POST['pais'],
+                'informacionProveedor' => $_POST['informacionProveedor'],
+                'logo' => $_POST['logo'],
+                'tipoProveedor' => $_POST['tipoProveedor'],
+                'notas' => $_POST['notas'],
+                'fechaUltimaActividad' => $_POST['fechaUltimaActividad'],
+                'estadoProveedor' => $_POST['estadoProveedor'],
+                'sitioWeb' => $_POST['sitioWeb'],
+                'rfc' => $_POST['rfc'],
+                'tipoBanco' => $_POST['tipoBanco'],
+                'cuentaBancaria' => $_POST['cuentaBancaria'],
+            ];
+            try {
+
+                BLproviders::BLpostUpdate($datos);
+
+                echo '<script>window.location.href = "Proveedores";</script>';
+                exit;
+            } catch (Exception $e) {
+
+                echo "Error: " . $e->getMessage();
+            }
+        }
+    }
+
+    static public function InsertContactos()
+    {
+        if (isset($_POST['registrar'])) {
+            $idProveedorRedireccion = $_POST['idProveedor'];
+
+            $datos = [
+                'idProveedor' => $idProveedorRedireccion,
+                'nombreProveedor' => $_POST['nombreProveedor'],
+                'apellidoPaterno' => $_POST['apellidoPaterno'],
+                'apellidoMaterno' => $_POST['apellidoMaterno'],
+                'email' => $_POST['email'],
+                'notas' => $_POST['notas'],
+            ];
+            try {
+                BLproviders::BLInsertContactos($datos);
+                echo '<script>window.location.href = "Contacto?idProveedor=' . $idProveedorRedireccion . '";</script>';
+                exit;
+            } catch (Exception $e) {
+                echo "Error: " . $e->getMessage();
+            }
+        }
+    }
 }

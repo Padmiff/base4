@@ -46,8 +46,8 @@ if ($noEmpleado) {
                                     <p><strong>No. Empleado:</strong> <?php echo htmlspecialchars($empleado['noEmpleado']); ?></p>
                                     <p><strong>RFC:</strong> <?php echo htmlspecialchars($empleado['rfc']); ?></p>
                                     <p><strong>Número de Seguro Social:</strong> <?php echo htmlspecialchars($empleado['numeroSeguroSocial']); ?></p>
-                                    <p><strong>Departamento:</strong> <?php echo htmlspecialchars($empleado['nombreDepartamento'] ?? 'N/A'); ?></p>
-                                    <p><strong>Rol:</strong> <?php echo htmlspecialchars($empleado['nombreRol'] ?? 'N/A'); ?></p>
+                                    <p><strong>Departamento:</strong> <?php echo htmlspecialchars($empleado['nombre']); ?></p>
+                                    <p><strong>Rol:</strong> <?php echo htmlspecialchars($empleado['rol']); ?></p>
                                 </div>
                             </div>
                             <div class="row">

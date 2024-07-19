@@ -65,10 +65,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'block' && isset($_GET['idClie
             </div>
             <div class="d-flex align-items-center justify-content-end my-3">
                 <a href="ClientesBloqueados"><button class="btn btn-falcon-danger btn-sm me-2" type="button"><span class="fas fa-lock" data-fa-transform="shrink-3 down-2"></span><span class="ms-1">Bloqueados</span></button></a>
-                <div data-bs-target="#exampleModal" data-bs-toggle="modal"><button class="btn btn-falcon-success btn-sm" type="button"><span class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span><span class="ms-1">Agregar</span></button></div>
+                <div data-bs-target="#agregar" data-bs-toggle="modal"><button class="btn btn-falcon-success btn-sm" type="button"><span class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span><span class="ms-1">Agregar</span></button></div>
             </div>
         </div>
-        <div class="tab-pane fade show active" id="activos" role="tabpanel" aria-labelledby="activos-tab">
+        <div class="tab-pane fade show active" role="tabpanel" aria-labelledby="activos-tab">
             <div class="table-responsive scrollbar">
                 <table class="table table-bordered table-striped fs-10 mb-0">
                     <thead class="bg-300">
@@ -78,7 +78,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'block' && isset($_GET['idClie
                             <th class="text-900 sort" data-sort="estado">Estado</th>
                             <th class="text-900 sort" data-sort="ciudad">Ciudad</th>
                             <th class="text-900 sort" data-sort="CP">Codigo Postal</th>
-                            <th class="text-900 sort" data-sort="fechare">Fecha de registro</th>
+                            <th class="text-900 sort" data-sort="fechare">Registro</th>
                             <th class="text-900 sort" data-sort="fecha">Fecha de ultima Actividad</th>
                             <th></th>
                             <th class="text-900 sort">Acciones</th>
@@ -105,12 +105,14 @@ if (isset($_GET['action']) && $_GET['action'] === 'block' && isset($_GET['idClie
                                         <td class="fecha"><?php echo htmlspecialchars($usuario['fechaUltimaActividad']); ?></td>
                                         <td><a href="">Editar permisos</a></td>
                                         <td>
-                                            <a class="btn btn-info btn-actualizar" data-bs-target="#update" data-bs-toggle="modal" data-id="<?php echo htmlspecialchars($usuario['idCliente']); ?>">
-                                                <span class="fas fa-sync-alt"></span>
-                                            </a>
-                                            <a class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#bloquearModal<?php echo htmlspecialchars($usuario['idCliente']); ?>">
-                                                <span class="fas fa-lock"></span>
-                                            </a>
+                                            <div class="d-flex">
+                                                <a class="btn btn-info me-2 btn-actualizar" data-bs-target="#update" data-bs-toggle="modal" data-id="<?php echo htmlspecialchars($usuario['idCliente']); ?>">
+                                                    <span class="fas fa-sync-alt"></span>
+                                                </a>
+                                                <a class="btn btn-warning me-4" data-bs-toggle="modal" data-bs-target="#bloquearModal<?php echo htmlspecialchars($usuario['idCliente']); ?>">
+                                                    <span class="fas fa-lock"></span>
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                         <?php
@@ -132,7 +134,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'block' && isset($_GET['idClie
         </div>
     </div>
 </div>
-
+<!-- Alert para confirmar si es neceario bloquear a l usuario-->
 <?php foreach ($usuarios as $usuario) : ?>
     <div class="modal fade" id="bloquearModal<?php echo htmlspecialchars($usuario['idCliente']); ?>" tabindex="-1" aria-labelledby="bloquearModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -154,4 +156,259 @@ if (isset($_GET['action']) && $_GET['action'] === 'block' && isset($_GET['idClie
         </div>
     </div>
 <?php endforeach; ?>
+<?php
+// Establecer la zona horaria a México
+date_default_timezone_set('America/Mexico_City');
+?>
+<!--  Modal para insertar un usuario nuevo-->
+<div class="modal fade" id="agregar" tabindex="-1" role="dialog" aria-labelledby="agregarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body p-4">
+                <div class="row text-start justify-content-between align-items-center mb-2">
+                    <div class="col-auto">
+                        <h5 id="agregarModalLabel">Nuevo Cliente</h5>
+                    </div>
+                    <button class="btn-close mb-1" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <?php ClientsController::postInsertClientes() ?>
+                <form action="" method="post">
+                    <input value="Activo" type="hidden" name="estadoCuenta">
+                    <div class="mb-3">
+                        <input class="form-control" type="text" name="foto" placeholder="foto" required />
+                    </div>
+                    <div class="mb-3">
+                        <input class="form-control" type="text" name="nombre" placeholder="Nombre" required />
+                    </div>
+                    <div class="row gx-1 mb-2">
+                        <div class="col-sm-6 mb-1">
+                            <input class="form-control" type="text" name="apellidoPaterno" placeholder="Apellido Paterno" required />
+                        </div>
+                        <div class="col-sm-6">
+                            <input class="form-control" type="text" name="apellidoMaterno" placeholder="Apellido Materno" required />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fechaNacimiento">Fecha de nacimiento<span class="text-danger"> *</span></label>
+                        <input class="form-control" type="date" name="fechaNacimiento" required />
+                    </div>
+                    <div class="row gx-1 mb-2">
+                        <div class="col-sm-6 mb-1">
+                            <input class="form-control" type="text" name="pais" placeholder="País" required />
+                        </div>
+                        <div class="col-sm-6">
+                            <input class="form-control" type="text" name="estado" placeholder="Estado" required />
+                        </div>
+                    </div>
+                    <div class="row gx-1 mb-3">
+                        <div class="col-sm-6 mb-1">
+                            <input class="form-control" type="text" name="ciudad" placeholder="Ciudad" required />
+                        </div>
+                        <div class="col-sm-6">
+                            <input class="form-control" type="text" name="codigoPostal" placeholder="Codigo Postal" required />
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <input class="form-control" type="text" name="direccion" placeholder="Dirección" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="fechaRegistro">Fecha y hora de registro<span class="text-danger"> *</span></label>
+                        <input class="form-control" type="datetime-local" name="fechaRegistro" value="<?php echo date('Y-m-d\TH:i'); ?>" required />
+                    </div>
+
+                    <div class="row gx-1 mb-2">
+                        <div class="col-sm-6 mb-1">
+                            <select class="form-select" name="tipoCliente">
+                                <option>-- Tipo de cliente --</option>
+                                <option value="opcion 1">opcion 1</option>
+                                <option value="opcion 2">opcion 2</option>
+                                <option value="opcion 3">opcion 3</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6 mb-1">
+                            <select class="form-select" name="preferencia">
+                                <option>-- Preferencia --</option>
+                                <option value="Alta">Alta</option>
+                                <option value="Media">Media</option>
+                                <option value="Baja">Baja</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <textarea class="form-control" name="informacion" placeholder="Informacion del cliente"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="contratacion">Fecha de ultima actividad<span class="text-danger"> *</span></label>
+                        <input class="form-control" type="date" name="fechaUltimaActividad" required />
+                    </div>
+                    <div class="mb-3">
+                        <textarea class="form-control" name="notas" placeholder="Notas"></textarea>
+                    </div>
+                    <div class="row gx-1 mb-3">
+                        <hr>
+                        <div class="col-sm-6 mb-1">
+                            <button class="btn btn-primary d-block mx-1 w-100" type="submit" name="registrar">Agregar</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <button class="btn btn-secondary d-block mx-1 w-100" type="reset">Restaurar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--  Modal para Actualizar un usuario nuevo-->
+<div class="modal fade" id="update" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body p-4">
+                <div class="row text-start justify-content-between align-items-center mb-2">
+                    <div class="col-auto">
+                        <h5 id="updateModalLabel">Actualizar Cliente</h5>
+                    </div>
+                    <button class="btn-close mb-1" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <?php ClientsController::postUpdateClient() ?>
+                <form action="" method="post">
+                    <input type="hidden" name="idCliente" id="idCliente_update">
+                    <div class="mb-3">
+                        <input class="form-control" type="text" name="foto" id="foto_update" placeholder="foto" required />
+                    </div>
+                    <div class="mb-3">
+                        <input class="form-control" type="text" name="nombreCliente" id="nombreCliente_update" placeholder="Nombre" required />
+                    </div>
+                    <div class="row gx-1 mb-2">
+                        <div class="col-sm-6 mb-1">
+                            <input class="form-control" type="text" name="apellidoPaterno" id="apellidoPaterno_update" placeholder="Apellido Paterno" required />
+                        </div>
+                        <div class="col-sm-6">
+                            <input class="form-control" type="text" name="apellidoMaterno" id="apellidoMaterno_update" placeholder="Apellido Materno" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="fechaNacimiento">Fecha de nacimiento<span class="text-danger"> *</span></label>
+                        <input class="form-control" type="date" name="fechaNacimiento" id="fechaNacimiento_update" required />
+                    </div>
+                    <div class="row gx-1 mb-2">
+                        <div class="col-sm-6 mb-1">
+                            <input class="form-control" type="text" name="pais" id="pais_update" placeholder="País" required />
+                        </div>
+                        <div class="col-sm-6">
+                            <input class="form-control" type="text" name="estado" id="estado_update" placeholder="Estado" required />
+                        </div>
+                    </div>
+                    <div class="row gx-1 mb-3">
+                        <div class="col-sm-6 mb-1">
+                            <input class="form-control" type="text" name="ciudad" id="ciudad_update" placeholder="Ciudad" required />
+                        </div>
+                        <div class="col-sm-6">
+                            <input class="form-control" type="text" name="codigoPostal" id="codigoPostal_update" placeholder="Codigo Postal" required />
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <input class="form-control" type="text" name="direccion" id="direccion_update" placeholder="Dirección" required />
+                    </div>
+                    <div class="row gx-1 mb-2">
+                        <div class="col-sm-6 mb-1">
+                            <select class="form-select" name="tipoCliente" id="tipoCliente_update">
+                                <option>-- Tipo de cliente --</option>
+                                <option value="opcion 1">opcion 1</option>
+                                <option value="opcion 2">opcion 2</option>
+                                <option value="opcion 3">opcion 3</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6 mb-1">
+                            <select class="form-select" name="preferencia" id="preferencia_update">
+                                <option>-- Preferencia --</option>
+                                <option value="Alta">Alta</option>
+                                <option value="Media">Media</option>
+                                <option value="Baja">Baja</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <textarea class="form-control" name="informacion" id="informacion_update" placeholder="Informacion del cliente"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fechaUltimaActividad">Fecha de ultima actividad<span class="text-danger"> *</span></label>
+                        <input class="form-control" type="date" name="fechaUltimaActividad" id="fechaUltimaActividad_update" required />
+                    </div>
+                    <div class="mb-3">
+                        <textarea class="form-control" name="notas" id="notas_update" placeholder="Notas"></textarea>
+                    </div>
+                    <div class="row gx-1 mb-3">
+                        <hr>
+                        <div class="col-sm-6 mb-1">
+                            <button class="btn btn-primary d-block mx-1 w-100" type="submit" name="actualizar">Actualizar</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <button class="btn btn-secondary d-block mx-1 w-100" type="reset">Restaurar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Obtener todos los botones de actualización
+        var updateButtons = document.querySelectorAll('.btn-actualizar');
+
+        // Iterar sobre cada botón de actualización
+        updateButtons.forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevenir el comportamiento por defecto del enlace
+
+                var userId = this.getAttribute('data-id'); // Obtener el id del usuario
+
+                // Hacer una solicitud AJAX para obtener los datos del usuario
+                fetch('Models/BLobtain.php?action=ObtainClients&id=' + userId)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Llenar los campos del formulario con los datos obtenidos
+                        document.getElementById('idCliente_update').value = data.idCliente;
+                        document.getElementById('foto_update').value = data.foto;
+                        document.getElementById('nombreCliente_update').value = data.nombreCliente;
+                        document.getElementById('apellidoPaterno_update').value = data.apellidoPaterno;
+                        document.getElementById('apellidoMaterno_update').value = data.apellidoMaterno;
+                        document.getElementById('fechaNacimiento_update').value = formatDate(data.fechaNacimiento);
+                        document.getElementById('pais_update').value = data.pais;
+                        document.getElementById('estado_update').value = data.estado;
+                        document.getElementById('ciudad_update').value = data.ciudad;
+                        document.getElementById('direccion_update').value = data.direccion;
+                        document.getElementById('codigoPostal_update').value = data.codigoPostal;
+                        document.getElementById('fechaUltimaActividad_update').value = formatDate(data.fechaUltimaActividad);
+                        document.getElementById('tipoCliente_update').value = data.tipoCliente;
+                        document.getElementById('preferencia_update').value = data.preferencia;
+                        document.getElementById('informacion_update').value = data.informacion;
+                        document.getElementById('notas_update').value = data.notas;
+                    })
+                    .catch(error => console.error('Error al obtener datos del usuario', error));
+            });
+        });
+
+        function formatDate(dateString) {
+            if (!dateString) return ''; // Manejo de casos donde la fecha es nula o indefinida
+
+            // Convertir la fecha al formato YYYY-MM-DD si no está en ese formato
+            var dateObject = new Date(dateString);
+            if (isNaN(dateObject.getTime())) {
+                // Si no es una fecha válida, retornar la cadena original
+                return dateString;
+            } else {
+                // Convertir la fecha al formato YYYY-MM-DD
+                var year = dateObject.getUTCFullYear();
+                var month = ('0' + (dateObject.getUTCMonth() + 1)).slice(-2); // Meses son indexados desde 0, por eso se suma 1
+                var day = ('0' + dateObject.getUTCDate()).slice(-2);
+
+                return year + '-' + month + '-' + day;
+            }
+        }
+    });
+</script>
+
 <script src="Views/Resources/assets/js/alerts.js"></script>

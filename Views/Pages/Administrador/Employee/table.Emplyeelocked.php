@@ -65,7 +65,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['idEmp
                 <a href="Empleados"><button class="btn btn-falcon-primary btn-sm me-2" type="button"><span class="fas fa-lock-open" data-fa-transform="shrink-3 down-2"></span><span class="ms-1">Activos</span></button></a>
             </div>
         </div>
-        <div class="tab-pane fade show active" id="activos" role="tabpanel" aria-labelledby="activos-tab">
+        <div class="tab-pane fade show active" role="tabpanel" aria-labelledby="activos-tab">
             <div class="table-responsive scrollbar">
                 <table class="table table-bordered table-striped fs-10 mb-0">
                     <thead class="bg-300">
@@ -106,12 +106,14 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['idEmp
                                         <td class="No"><?php echo htmlspecialchars($usuario['noEmpleado']); ?></td>
                                         <td><a href="#">Editar permisos</a></td>
                                         <td>
-                                            <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalDesbloquear<?php echo htmlspecialchars($usuario['idEmpleado']); ?>">
-                                                <span class=" fas fa-lock-open"></span>
-                                            </a>
-                                            <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#ModalEliminar<?php echo htmlspecialchars($usuario['idEmpleado']); ?>">
-                                                <span class="far fa-trash-alt"></span>
-                                            </a>
+                                            <div class="d-flex">
+                                                <a class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#ModalDesbloquear<?php echo htmlspecialchars($usuario['idEmpleado']); ?>">
+                                                    <span class=" fas fa-lock-open"></span>
+                                                </a>
+                                                <a class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#ModalEliminar<?php echo htmlspecialchars($usuario['idEmpleado']); ?>">
+                                                    <span class="far fa-trash-alt"></span>
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                         <?php

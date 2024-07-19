@@ -55,10 +55,12 @@ class BLclients
         try {
             $conn = self::getConnection();
 
-            $sql = "SELECT c.*, con.telefono
-                    FROM client as c
-                    LEFT JOIN contactocliente as con ON c.idCliente = con.idCliente
-                    WHERE con.idTipoContato = 1 OR con.idTipoContato IS NULL";
+            // $sql = "SELECT c.*, con.telefono, con.email
+            //         FROM client as c
+            //         LEFT JOIN contactocliente as con ON c.idCliente = con.idCliente
+            //         WHERE con.idTipoContato = 1 OR con.idTipoContato IS NULL";
+
+            $sql = "SELECT * FROM client ";
 
             $stmt = $conn->query($sql);
             $clientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -135,6 +137,101 @@ class BLclients
             $stmt->execute();
         } catch (PDOException $e) {
             throw new Exception('Error en la consulta: ' . $e->getMessage());
+        }
+    }
+
+    static public function BLpostInsertClients($datos)
+    {
+        try {
+            $conn = self::getConnection();
+
+            $sql = "INSERT INTO client(nombreCliente, apellidoPaterno, apellidoMaterno, direccion, ciudad, estado, 
+                    codigoPostal, pais, fechaRegistro, informacion, tipoCliente, preferencia, notas, fechaUltimaActividad, 
+                    estadoCuenta, fechaNacimiento, foto)VALUES(:nombre, :apellidoPaterno, :apellidoMaterno, :direccion, :ciudad,
+                    :estado, :codigoPostal, :pais, :fechaRegistro, :informacion, :tipoCliente, :preferencia, :notas, :fechaUltimaActividad,
+                    :estadoCuenta, :fechaNacimiento, :foto)";
+
+            $stmt = $conn->prepare($sql);
+
+            $stmt->bindParam(':nombre', $datos['nombre']);
+            $stmt->bindParam(':apellidoPaterno', $datos['apellidoPaterno']);
+            $stmt->bindParam(':apellidoMaterno', $datos['apellidoMaterno']);
+            $stmt->bindParam(':direccion', $datos['direccion']);
+            $stmt->bindParam(':ciudad', $datos['ciudad']);
+            $stmt->bindParam(':estado', $datos['estado']);
+            $stmt->bindParam(':codigoPostal', $datos['codigoPostal']);
+            $stmt->bindParam(':pais', $datos['pais']);
+
+            $stmt->bindParam(':fechaRegistro', $datos['fechaRegistro']);
+            $stmt->bindParam(':informacion', $datos['informacion']);
+            $stmt->bindParam(':tipoCliente', $datos['tipoCliente']);
+            $stmt->bindParam(':preferencia', $datos['preferencia']);
+            $stmt->bindParam(':notas', $datos['notas']);
+            $stmt->bindParam(':fechaUltimaActividad', $datos['fechaUltimaActividad']);
+            $stmt->bindParam(':estadoCuenta', $datos['estadoCuenta']);
+            $stmt->bindParam(':fechaNacimiento', $datos['fechaNacimiento']);
+            $stmt->bindParam(':foto', $datos['foto']);
+
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception('Error al agregar Cliente ' . $e->getMessage());
+        }
+    }
+
+    static public function BLpostUpdate($datos)
+    {
+        try {
+            $conn = self::getConnection();
+
+            $sql = "UPDATE client SET nombreCliente = :nombreCliente,  apellidoPaterno = :apellidoPaterno, apellidoMaterno = :apellidoMaterno, direccion = :direccion,
+                    ciudad = :ciudad, estado = :estado, codigoPostal = :codigoPostal, pais = :pais, informacion = :informacion, tipoCliente = :tipoCliente,
+                    preferencia = :preferencia, notas = :notas, fechaUltimaActividad = :fechaUltimaActividad, fechaNacimiento = :fechaNacimiento, foto = :foto WHERE idCliente = :idCliente";
+
+            $stmt = $conn->prepare($sql);
+
+            $stmt->bindParam(':nombreCliente', $datos['nombreCliente']);
+            $stmt->bindParam(':apellidoPaterno', $datos['apellidoPaterno']);
+            $stmt->bindParam(':apellidoMaterno', $datos['apellidoMaterno']);
+            $stmt->bindParam(':direccion', $datos['direccion']);
+            $stmt->bindParam(':ciudad', $datos['ciudad']);
+            $stmt->bindParam(':estado', $datos['estado']);
+            $stmt->bindParam(':codigoPostal', $datos['codigoPostal']);
+            $stmt->bindParam(':pais', $datos['pais']);
+            $stmt->bindParam(':informacion', $datos['informacion']);
+            $stmt->bindParam(':tipoCliente', $datos['tipoCliente']);
+            $stmt->bindParam(':preferencia', $datos['preferencia']);
+            $stmt->bindParam(':notas', $datos['notas']);
+            $stmt->bindParam(':fechaUltimaActividad', $datos['fechaUltimaActividad']);
+            $stmt->bindParam(':fechaNacimiento', $datos['fechaNacimiento']);
+            $stmt->bindParam(':foto', $datos['foto']);
+            $stmt->bindParam(':idCliente', $datos['idCliente']);
+
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception('Error al actualizar Colaborador ' . $e->getMessage());
+        }
+    }
+
+    static public function BLpostInsertContactos($datos)
+    {
+        try {
+            $conn = self::getConnection();
+
+            $sql = "INSERT INTO contactocliente(idCliente, nombre, apellidoPaterno, apellidoMaterno, email, notas)
+                    VALUES(:idCliente, :nombre, :apellidoPaterno, :apellidoMaterno, :email, :notas)";
+
+            $stmt = $conn->prepare($sql);
+
+            $stmt->bindParam(':idCliente', $datos['idCliente']);
+            $stmt->bindParam(':nombre', $datos['nombre']);
+            $stmt->bindParam(':apellidoPaterno', $datos['apellidoPaterno']);
+            $stmt->bindParam(':apellidoMaterno', $datos['apellidoMaterno']);
+            $stmt->bindParam(':email', $datos['email']);
+            $stmt->bindParam(':notas', $datos['notas']);
+
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception('Error al agregar Contacto ' . $e->getMessage());
         }
     }
 }

@@ -54,10 +54,12 @@ class BLproviders
         try {
             $conn = self::getConnection();
 
-            $sql = "SELECT p.*,c.telefono, c.email
-                    FROM proveedores as p
-                    LEFT JOIN contactoproveedor as c ON p.idProveedor = c.idProveedor
-                    WHERE c.idTipoContacto = 1 OR c.idTipoContacto IS NULL";
+            // $sql = "SELECT p.*,c.telefono, c.email
+            //         FROM proveedores as p
+            //         LEFT JOIN contactoproveedor as c ON p.idProveedor = c.idProveedor
+            //         WHERE c.idTipoContacto = 1 OR c.idTipoContacto IS NULL";
+
+            $sql = "SELECT * FROM proveedores";
 
             $stmt = $conn->prepare($sql);
             $stmt->execute();
@@ -135,6 +137,101 @@ class BLproviders
             $stmt->execute();
         } catch (PDOException $e) {
             throw new Exception('Error en la consulta: ' . $e->getMessage());
+        }
+    }
+
+    static public function BLpostInsertProviders($datos)
+    {
+        try {
+            $conn = self::getConnection();
+
+            $sql = "INSERT INTO proveedores(nombreEmpresa, direccionProveedor, ciudad, estado, codigoPostal, pais, fechaRegistro, informacionProveedor, logo,
+                    tipoProveedor, notas, fechaUltimaActividad, estadoProveedor, sitioWeb, rfc, tipoBanco, cuentaBancaria)
+                    VALUES(:nombreEmpresa, :direccionProveedor, :ciudad, :estado, :codigoPostal, :pais, :fechaRegistro, :informacionProveedor, :logo,
+                    :tipoProveedor, :notas, :fechaUltimaActividad, :estadoProveedor, :sitioWeb, :rfc, :tipoBanco, :cuentaBancaria);";
+
+            $stmt = $conn->prepare($sql);
+
+            $stmt->bindParam(':nombreEmpresa', $datos['nombreEmpresa']);
+            $stmt->bindParam(':direccionProveedor', $datos['direccionProveedor']);
+            $stmt->bindParam(':ciudad', $datos['ciudad']);
+            $stmt->bindParam(':estado', $datos['estado']);
+            $stmt->bindParam(':codigoPostal', $datos['codigoPostal']);
+            $stmt->bindParam(':pais', $datos['pais']);
+
+            $stmt->bindParam(':fechaRegistro', $datos['fechaRegistro']);
+            $stmt->bindParam(':informacionProveedor', $datos['informacionProveedor']);
+            $stmt->bindParam(':logo', $datos['logo']);
+            $stmt->bindParam(':tipoProveedor', $datos['tipoProveedor']);
+            $stmt->bindParam(':notas', $datos['notas']);
+            $stmt->bindParam(':fechaUltimaActividad', $datos['fechaUltimaActividad']);
+            $stmt->bindParam(':estadoProveedor', $datos['estadoProveedor']);
+            $stmt->bindParam(':sitioWeb', $datos['sitioWeb']);
+            $stmt->bindParam(':rfc', $datos['rfc']);
+            $stmt->bindParam(':tipoBanco', $datos['tipoBanco']);
+            $stmt->bindParam(':cuentaBancaria', $datos['cuentaBancaria']);
+
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception('Error al agregar Proveedor ' . $e->getMessage());
+        }
+    }
+
+    static public function BLpostUpdate($datos)
+    {
+        try {
+            $conn = self::getConnection();
+
+            $sql = "UPDATE proveedores SET nombreEmpresa = :nombreEmpresa, direccionProveedor = :direccionProveedor, ciudad = :ciudad, estado = :estado,
+                    codigoPostal = :codigoPostal, pais = :pais, informacionProveedor = :informacionProveedor, logo = :logo, 
+                    tipoProveedor = :tipoProveedor, notas = :notas, fechaUltimaActividad = :fechaUltimaActividad, sitioWeb = :sitioWeb, rfc = :rfc, 
+                    tipoBanco = :tipoBanco, cuentaBancaria = :cuentaBancaria WHERE idProveedor = :idProveedor;";
+
+            $stmt = $conn->prepare($sql);
+
+            $stmt->bindParam(':nombreEmpresa', $datos['nombreEmpresa']);
+            $stmt->bindParam(':direccionProveedor', $datos['direccionProveedor']);
+            $stmt->bindParam(':ciudad', $datos['ciudad']);
+            $stmt->bindParam(':estado', $datos['estado']);
+            $stmt->bindParam(':codigoPostal', $datos['codigoPostal']);
+            $stmt->bindParam(':pais', $datos['pais']);
+            $stmt->bindParam(':informacionProveedor', $datos['informacionProveedor']);
+            $stmt->bindParam(':logo', $datos['logo']);
+            $stmt->bindParam(':tipoProveedor', $datos['tipoProveedor']);
+            $stmt->bindParam(':notas', $datos['notas']);
+            $stmt->bindParam(':fechaUltimaActividad', $datos['fechaUltimaActividad']);
+            $stmt->bindParam(':sitioWeb', $datos['sitioWeb']);
+            $stmt->bindParam(':rfc', $datos['rfc']);
+            $stmt->bindParam(':tipoBanco', $datos['tipoBanco']);
+            $stmt->bindParam(':cuentaBancaria', $datos['cuentaBancaria']);
+            $stmt->bindParam(':idProveedor', $datos['idProveedor']);
+
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception('Error al actualizar Colaborador ' . $e->getMessage());
+        }
+    }
+
+    static public function BLInsertContactos($datos)
+    {
+        try {
+            $conn = self::getConnection();
+
+            $sql = "INSERT INTO contactoproveedor(idProveedor, nombreProveedor, apellidoPaterno, apellidoMaterno, email, notas)
+                    VALUES(:idProveedor, :nombreProveedor, :apellidoPaterno, :apellidoMaterno, :email, :notas);";
+
+            $stmt = $conn->prepare($sql);
+
+            $stmt->bindParam(':idProveedor', $datos['idProveedor']);
+            $stmt->bindParam('nombreProveedor', $datos['nombreProveedor']);
+            $stmt->bindParam('apellidoPaterno', $datos['apellidoPaterno']);
+            $stmt->bindParam('apellidoMaterno', $datos['apellidoMaterno']);
+            $stmt->bindParam('email', $datos['email']);
+            $stmt->bindParam('notas', $datos['notas']);
+
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception('Error al actualizar Colaborador ' . $e->getMessage());
         }
     }
 }

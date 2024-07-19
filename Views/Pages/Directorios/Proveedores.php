@@ -1,7 +1,7 @@
 <div class="card-title text-white mt-4">
     <h3 class="mb-0">Directorio de Proveedores</h3>
 </div>
-<div id="tableExample3" data-list='{"valueNames":["foto","No","name","app","apm","email","tel","rold","rol"],"page":10,"pagination":true}'>
+<div id="tableExample3" data-list='{"valueNames":["name","app","apm","email","tel","rold","rol"],"page":10,"pagination":true}'>
     <div class="row justify-content-end g-0 mt-4">
     </div>
     <div class="tab-content">
@@ -45,8 +45,8 @@
                                         <td class="direcc" direccion"><?php echo htmlspecialchars($usuario['direccionProveedor']); ?></td>
                                         <td class="web" sitweb"><?php echo htmlspecialchars($usuario['sitioWeb']); ?></td>
                                         <td class="rfc" rfc"><?php echo htmlspecialchars($usuario['rfc']); ?></td>
-                                        <td class="tel" tel"><?php echo htmlspecialchars($usuario['telefono']); ?></td>
-                                        <td class="email" email"><?php echo htmlspecialchars($usuario['email']); ?></td>
+                                        <td class="tel" tel"><?php echo htmlspecialchars($usuario['informacionProveedor']); ?></td>
+                                        <td class="email" email"><?php echo htmlspecialchars($usuario['tipoProveedor']); ?></td>
                                     </tr>
                         <?php
                                 }
