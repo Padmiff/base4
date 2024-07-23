@@ -78,9 +78,10 @@ class BLclients
             $conn = self::getConnection();
 
             $sql = "SELECT c.*, t.tipoContacto
-                    FROM contactocliente as c
-                    LEFT JOIN tipocontactocliente as t ON c.idTipoContato = t.idTipoContacto
-                    WHERE c.idCliente = :idCliente";
+                    FROM contactocliente AS c
+                    LEFT JOIN tipocontactocliente AS t ON c.idTipoContato = t.idTipoContacto
+                    WHERE c.idCliente = :idCliente
+                    AND c.estadoContacto = 'Activo'";
 
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':idCliente', $idCliente, PDO::PARAM_STR);

@@ -17,6 +17,7 @@ class ContactsClientsController
                 'apellidoMaterno' => $_POST['apellidoMaterno'],
                 'email' => $_POST['email'],
                 'notas' => $_POST['notas'],
+                'estadoContacto' => $_POST['estadoContacto'],
             ];
             try {
                 ContacsClients::BLpostInsertContactos($datos);
@@ -54,18 +55,7 @@ class ContactsClientsController
         $mail = new PHPMailer(true); // Instancia de PHPMailer con excepciones habilitadas
 
         try {
-            // Configuración del servidor SMTP
-            $mail->isSMTP(); // Enviar usando SMTP
-            $mail->Host       = 'smtp.ionos.mx'; // Servidor SMTP
-            $mail->SMTPAuth   = true; // Habilitar autenticación SMTP
-            $mail->Username   = 'servicios@correo.base4.mx'; // Usuario SMTP
-            $mail->Password   = '0202ChubacaC'; // Contraseña SMTP (debe almacenarse de forma segura)
-            $mail->SMTPSecure = 'ssl'; // Habilitar cifrado SSL
-            $mail->Port       = 465; // Puerto TCP para conectar
 
-            // Destinatario del correo
-            $mail->setFrom('servicios@correo.base4.mx', 'base4');
-            $mail->addAddress($correoDestinatario);
 
             // Formato del correo HTML
             $mail->isHTML(true);
@@ -130,12 +120,10 @@ class ContactsClientsController
         }
         .btn {
             display: inline-block;
-            background-color: #ff2929;
             padding: 10px 20px;
             border-radius: 5px;
             margin-top: 15px;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            border: 1px solid #fc0d0d;
+            border: 1px solid black;
             text-decoration: none;
         }
         .btn:hover {
@@ -242,6 +230,40 @@ class ContactsClientsController
 
             echo '<script>window.location.href = "http://localhost/base4_ho/Views/login.php";</script>';
             exit;
+        }
+    }
+
+    static public function postUpdateContact()
+    {
+        if (isset($_POST['actualizar'])) {
+            $idClienteRedireccion = $_POST['idCliente'];
+            $datos = [
+                'idCliente' => $idClienteRedireccion,
+                'idContacto' => $_POST['idContacto'],
+                'nombre' => $_POST['nombre'],
+                'email' => $_POST['email'],
+                'apellidoPaterno' => $_POST['apellidoPaterno'],
+                'apellidoMaterno' => $_POST['apellidoMaterno'],
+                'notas' => $_POST['notas'],
+            ];
+            try {
+                ContacsClients::BLpostUpdateContact($datos);
+                echo '<script>window.location.href = "ContactosClientes?idCliente=' . $idClienteRedireccion . '";</script>';
+                exit;
+            } catch (Exception $e) {
+                echo "Error: " . $e->getMessage();
+            }
+        }
+    }
+
+    static public function deleteContact($idContacto, $idCliente)
+    {
+        try {
+            ContacsClients::BLdeleteContacts($idContacto);
+            echo '<script>window.location.href = "ContactosClientes?idCliente=' . $idCliente . '";</script>';
+            exit;
+        } catch (Exception $e) {
+            echo 'Error al eliminar contacto: ' . $e->getMessage();
         }
     }
 }

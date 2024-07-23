@@ -23,8 +23,8 @@ class ContacsClients
 
             $conn = self::getConnection();
 
-            $sql = "INSERT INTO contactocliente(idCliente, nombre, apellidoPaterno, apellidoMaterno, email, notas)
-                    VALUES(:idCliente, :nombre, :apellidoPaterno, :apellidoMaterno, :email, :notas)";
+            $sql = "INSERT INTO contactocliente(idCliente, nombre, apellidoPaterno, apellidoMaterno, email, notas, estadoContacto)
+                    VALUES(:idCliente, :nombre, :apellidoPaterno, :apellidoMaterno, :email, :notas, :estadoContacto)";
 
             $stmt = $conn->prepare($sql);
 
@@ -34,6 +34,7 @@ class ContacsClients
             $stmt->bindParam(':apellidoMaterno', $datos['apellidoMaterno']);
             $stmt->bindParam(':email', $datos['email']);
             $stmt->bindParam(':notas', $datos['notas']);
+            $stmt->bindParam(':estadoContacto', $datos['estadoContacto']);
 
             $stmt->execute();
         } catch (PDOException $e) {
@@ -92,6 +93,45 @@ class ContacsClients
             return $count > 0;
         } catch (PDOException $e) {
             throw new Exception('Error al verificar el correo: ' . $e->getMessage());
+        }
+    }
+
+    static public function BLpostUpdateContact($datos)
+    {
+        try {
+            $conn = self::getConnection();
+
+            $sql = "UPDATE contactocliente set idCliente = :idCliente, nombre = :nombre, apellidoPaterno = :apellidoPaterno, apellidoMaterno = :apellidoMaterno,
+            email = :email, notas = :notas WHERE idContacto = :idContacto";
+
+            $stmt = $conn->prepare($sql);
+
+            $stmt->bindParam(':idCliente', $datos['idCliente']);
+            $stmt->bindParam(':nombre', $datos['nombre']);
+            $stmt->bindParam(':apellidoPaterno', $datos['apellidoPaterno']);
+            $stmt->bindParam(':apellidoMaterno', $datos['apellidoMaterno']);
+            $stmt->bindParam(':email', $datos['email']);
+            $stmt->bindParam(':notas', $datos['notas']);
+            $stmt->bindParam(':idContacto', $datos['idContacto']);
+
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception('Error al actualizar Colaborador ' . $e->getMessage());
+        }
+    }
+
+    static public function BLdeleteContacts($idContacto)
+    {
+        try {
+            $conn = self::getConnection();
+
+            $sql = "UPDATE contactocliente SET estadoContacto = 'Eliminado' WHERE idContacto = :idContacto";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':idContacto', $idContacto, PDO::PARAM_INT);
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception('Error en la consulta: ' . $e->getMessage());
         }
     }
 }

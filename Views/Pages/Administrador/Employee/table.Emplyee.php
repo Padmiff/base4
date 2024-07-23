@@ -8,6 +8,12 @@
         opacity: 1;
         transition: opacity 0.5s ease;
     }
+
+    .active,
+    .nav-item .nav-link-custom {
+        color: #ed1529 !important;
+        border-color: #ed1529 !important;
+    }
 </style>
 <?php
 // Verifica si se ha solicitado bloquear un empleado
@@ -39,13 +45,13 @@ if (isset($_GET['action']) && $_GET['action'] === 'block' && isset($_GET['idEmpl
                     Colaboradores</button>
             </li>
             <li class="nav-item" role="presentation">
-                <a href="Proveedores">
+                <a href="Proveedores" class="nav-link-custom">
                     <button class="nav-link" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">
                         Proveedores</button>
                 </a>
             </li>
             <li class="nav-item" role="presentation">
-                <a href="Clientes">
+                <a href="Clientes" class="nav-link-custom">
                     <button class="nav-link" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">
                         Clientes</button>
                 </a>

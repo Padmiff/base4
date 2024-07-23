@@ -8,6 +8,12 @@
         opacity: 1;
         transition: opacity 0.5s ease;
     }
+
+    .active,
+    .nav-item .nav-link-custom {
+        color: #ed1529 !important;
+        border-color: #ed1529 !important;
+    }
 </style>
 <?php
 // Verifica si se ha solicitado bloquear un empleado
@@ -34,19 +40,19 @@ if (isset($_GET['action']) && $_GET['action'] === 'block' && isset($_GET['idProv
     <div class="row justify-content-end g-0 mt-4">
         <ul class="nav nav-tabs mb-1" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <a href="Empleados">
+                <a href="Empleados" class="nav-link-custom">
                     <button class="nav-link" id="activos-tab" data-bs-toggle="tab" data-bs-target="#activos" type="button" role="tab" aria-controls="activos" aria-selected="true">
                         Colaboradores</button>
                 </a>
             </li>
             <li class="nav-item" role="presentation">
-                <a href="Proveedores">
+                <a href="Proveedores" class="nav-link-custom">
                     <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#bloqueados" type="button" role="tab" aria-controls="bloqueados" aria-selected="false">
                         Proveedores</button>
                 </a>
             </li>
             <li class="nav-item" role="presentation">
-                <a href="Clientes">
+                <a href="Clientes" class="nav-link-custom">
                     <button class="nav-link" data-bs-toggle="tab" data-bs-target="#bloqueados" type="button" role="tab" aria-controls="bloqueados" aria-selected="false">
                         Clientes</button>
                 </a>

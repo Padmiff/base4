@@ -20,6 +20,9 @@ function ObtainData()
             case 'ObtainProvee':
                 $sql = "SELECT * FROM proveedores WHERE idProveedor = :id";
                 break;
+            case 'ObtainContactClient':
+                $sql = "SELECT * FROM contactocliente WHERE idContacto = :id";
+                break;
             default:
                 echo json_encode(array('error' => 'Acción no válida'));
                 return;
