@@ -36,6 +36,7 @@ include "Modules/Header.php";
                         "ProveedoresBloqueados" => "Pages/Administrador/Providers/table.Providerslocked.php",
                         "Clientes" => "Pages/Administrador/Clients/table.Clients.php",
                         "ClientesBloqueados" => "Pages/Administrador/Clients/table.Clientslocked.php",
+                        "ContactosClientes" => "Pages/Administrador/Clients/Contacts.php",
 
                         ###### Vista informacion de empleado/Proveedores/Clientes #####
                         "Perfil" => "Pages/Directorios/InfoEmpleados.php",

@@ -211,27 +211,4 @@ class BLclients
             throw new Exception('Error al actualizar Colaborador ' . $e->getMessage());
         }
     }
-
-    static public function BLpostInsertContactos($datos)
-    {
-        try {
-            $conn = self::getConnection();
-
-            $sql = "INSERT INTO contactocliente(idCliente, nombre, apellidoPaterno, apellidoMaterno, email, notas)
-                    VALUES(:idCliente, :nombre, :apellidoPaterno, :apellidoMaterno, :email, :notas)";
-
-            $stmt = $conn->prepare($sql);
-
-            $stmt->bindParam(':idCliente', $datos['idCliente']);
-            $stmt->bindParam(':nombre', $datos['nombre']);
-            $stmt->bindParam(':apellidoPaterno', $datos['apellidoPaterno']);
-            $stmt->bindParam(':apellidoMaterno', $datos['apellidoMaterno']);
-            $stmt->bindParam(':email', $datos['email']);
-            $stmt->bindParam(':notas', $datos['notas']);
-
-            $stmt->execute();
-        } catch (PDOException $e) {
-            throw new Exception('Error al agregar Contacto ' . $e->getMessage());
-        }
-    }
 }

@@ -94,7 +94,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'block' && isset($_GET['idClie
                                     <tr>
                                         <td class="foto"><?php echo htmlspecialchars($usuario['foto']); ?></td>
                                         <td class="name">
-                                            <a href="Cliente?idCliente=<?php echo htmlspecialchars($usuario['idCliente']); ?>">
+                                            <a href="ContactosClientes?idCliente=<?php echo htmlspecialchars($usuario['idCliente']); ?>">
                                                 <?php echo htmlspecialchars($usuario['nombreCliente'] . ' ' . $usuario['apellidoPaterno'] . ' ' . $usuario['apellidoMaterno']); ?>
                                             </a>
                                         </td>

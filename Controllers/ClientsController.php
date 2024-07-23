@@ -129,27 +129,4 @@ class ClientsController
             }
         }
     }
-
-    static public function postInsertContactos()
-    {
-        if (isset($_POST['registrar'])) {
-            $idClienteRedireccion = $_POST['idCliente'];
-
-            $datos = [
-                'idCliente' => $idClienteRedireccion,
-                'nombre' => $_POST['nombre'],
-                'apellidoPaterno' => $_POST['apellidoPaterno'],
-                'apellidoMaterno' => $_POST['apellidoMaterno'],
-                'email' => $_POST['email'],
-                'notas' => $_POST['notas'],
-            ];
-            try {
-                BLclients::BLpostInsertContactos($datos);
-                echo '<script>window.location.href = "Cliente?idCliente=' . $idClienteRedireccion . '";</script>';
-                exit;
-            } catch (Exception $e) {
-                echo "Error: " . $e->getMessage();
-            }
-        }
-    }
 }
