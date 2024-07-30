@@ -69,17 +69,7 @@ class ContactsClientsController
 
         try {
             // Configuración del servidor SMTP
-            $mail->isSMTP(); // Enviar usando SMTP
-            $mail->Host       = 'smtp.ionos.mx'; // Servidor SMTP
-            $mail->SMTPAuth   = true; // Habilitar autenticación SMTP
-            $mail->Username   = 'servicios@correo.base4.mx'; // Usuario SMTP
-            $mail->Password   = '0202ChubacaC'; // Contraseña SMTP (debe almacenarse de forma segura)
-            $mail->SMTPSecure = 'ssl'; // Habilitar cifrado SSL
-            $mail->Port       = 465; // Puerto TCP para conectar
-
-            // Destinatario del correo
-            $mail->setFrom('servicios@correo.base4.mx', 'base4');
-            $mail->addAddress($correoDestinatario);
+        
 
             // Formato del correo HTML
             $mail->isHTML(true);
