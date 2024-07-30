@@ -100,7 +100,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'block' && isset($_GET['idProv
                                     <tr>
                                         <td class="logo"><?php echo htmlspecialchars($usuario['logo']); ?></td>
                                         <td class="prov">
-                                            <a href="Contacto?idProveedor=<?php echo htmlspecialchars($usuario['idProveedor']); ?>">
+                                            <a href="ContactosProveedores?idProveedor=<?php echo htmlspecialchars($usuario['idProveedor']); ?>">
                                                 <?php echo htmlspecialchars($usuario['nombreEmpresa']); ?>
                                             </a>
                                         </td>

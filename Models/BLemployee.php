@@ -5,6 +5,11 @@ class BLemployee
 {
     private static $conn;
 
+    /**
+     * Obtiene la conexión a la base de datos.
+     * 
+     * Instancia de la conexión a la base de datos.
+     */
     private static function getConnection()
     {
         if (!isset(self::$conn)) {
@@ -13,6 +18,12 @@ class BLemployee
         return self::$conn;
     }
 
+    /**
+     * Obtiene una lista de empleados activos, excluyendo a los administradores.
+     * 
+     * Lista de empleados activos.
+     * Si ocurre un error durante la consulta.
+     */
     static public function getEmployeeActive()
     {
         try {
@@ -22,7 +33,8 @@ class BLemployee
                     FROM empleado as e
                     INNER JOIN rol as r ON e.idRol = r.idRol
                     INNER JOIN departamento as d ON e.idDepartamento = d.idDepto
-                    WHERE estadoEmpleado = 'Activo';";
+                    WHERE estadoEmpleado = 'Activo'
+                    AND r.nombre != 'administrador'";
 
             $stmt = $conn->prepare($sql);  // Prepara la consulta SQL
             $stmt->execute();  // Ejecuta la consulta
@@ -35,6 +47,12 @@ class BLemployee
         }
     }
 
+    /**
+     * Obtiene una lista de empleados inactivos.
+     * 
+     * Lista de empleados inactivos.
+     * Si ocurre un error durante la consulta.
+     */
     static public function getEmployeeInactive()
     {
         try {
@@ -57,6 +75,13 @@ class BLemployee
         }
     }
 
+    /**
+     * Obtiene los detalles de un empleado específico basado en su número de empleado.
+     * 
+     * $noEmpleado Número del empleado.
+     * Detalles del empleado o null si no se encuentra.
+     * Si ocurre un error durante la consulta.
+     */
     static public function getEmployeebyId($noEmpleado)
     {
         try {
@@ -79,6 +104,12 @@ class BLemployee
         }
     }
 
+    /**
+     * Obtiene una lista de todos los empleados, excluyendo a los administradores.
+     * 
+     * Lista de empleados.
+     * Si ocurre un error durante la consulta.
+     */
     static public function BLgetEmployeeAll()
     {
         try {
@@ -86,8 +117,9 @@ class BLemployee
 
             $sql = "SELECT e.*, r.nombre as rol, d.nombre
                     FROM empleado as e 
-                    INNER JOIN Rol as r ON e.idRol = r.idRol 
-                    INNER JOIN Departamento as d ON e.idDepartamento = d.idDepto";
+                    INNER JOIN rol as r ON e.idRol = r.idRol 
+                    INNER JOIN departamento as d ON e.idDepartamento = d.idDepto
+                    WHERE r.nombre != 'administrador'";
 
             $stmt = $conn->prepare($sql);
             $stmt->execute();
@@ -98,6 +130,12 @@ class BLemployee
         }
     }
 
+    /**
+     * Actualiza el estado de un empleado a "Inactivo".
+     * 
+     * $idEmpleado ID del empleado.
+     * Si ocurre un error durante la actualización.
+     */
     static public function BLblockemployee($idEmpleado)
     {
         try {
@@ -113,6 +151,12 @@ class BLemployee
         }
     }
 
+    /**
+     * Actualiza el estado de un empleado a "Activo".
+     * 
+     * $idEmpleado ID del empleado.
+     * Si ocurre un error durante la actualización.
+     */
     static public function BLunlockemployee($idEmpleado)
     {
         try {
@@ -128,6 +172,12 @@ class BLemployee
         }
     }
 
+    /**
+     * Marca un empleado como "Eliminado".
+     * 
+     * $idEmpleado ID del empleado.
+     * Si ocurre un error durante la actualización.
+     */
     static public function BLdeleteEmployee($idEmpleado)
     {
         try {
@@ -143,6 +193,12 @@ class BLemployee
         }
     }
 
+    /**
+     * Obtiene una lista de roles disponibles.
+     * 
+     * Lista de roles.
+     * Si ocurre un error durante la consulta.
+     */
     static public function BLgetRoles()
     {
         try {
@@ -159,6 +215,12 @@ class BLemployee
         }
     }
 
+    /**
+     * Obtiene una lista de departamentos disponibles.
+     * 
+     * Lista de departamentos.
+     * Si ocurre un error durante la consulta.
+     */
     static public function BLgetdepartamento()
     {
         try {
@@ -175,6 +237,12 @@ class BLemployee
         }
     }
 
+    /**
+     * Inserta un nuevo empleado en la base de datos.
+     * 
+     * $datos Datos del empleado a insertar.
+     * Si ocurre un error durante la inserción.
+     */
     static public function BLpostInsert($datos)
     {
         try {
@@ -218,6 +286,13 @@ class BLemployee
         }
     }
 
+    /**
+     * Actualiza la información de un empleado existente.
+     * 
+     * $datos Datos actualizados del empleado.
+     * $idEmpleado ID del empleado a actualizar.
+     * Si ocurre un error durante la actualización.
+     */
     static public function BLpostUpdate($datos)
     {
         try {

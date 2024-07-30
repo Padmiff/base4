@@ -45,7 +45,6 @@ if ($idCliente) {
                         <th class="text-900 sort" data-sort="tipoContacto">Tipo de Contacto</th>
                         <th class="text-900 sort" data-sort="semanada">HS ATT Semana</th>
                         <th class="text-900 sort" data-sort="finsemana">HS ATT Finsemana</th>
-                        <th class="text-900 sort" data-sort="notas">Notas</th>
                     </tr>
                 </thead>
                 <tbody class="list">
@@ -60,7 +59,6 @@ if ($idCliente) {
                                 <td class="tipoContacto"><?php echo htmlspecialchars($row['tipoContacto']); ?></td>
                                 <td class="semanada"><?php echo htmlspecialchars($row['horaAtencionSemana']); ?></td>
                                 <td class="finsemana"><?php echo htmlspecialchars($row['horaAtencionFinseman']); ?></td>
-                                <td class="notas"><?php echo htmlspecialchars($row['notas']); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>

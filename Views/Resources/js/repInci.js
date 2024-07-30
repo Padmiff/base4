@@ -1,113 +1,147 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const steps = document.querySelectorAll('.form-step');
-    let currentStep = 0;
-    
+ document.addEventListener('DOMContentLoaded', function () {
+            const steps = document.querySelectorAll('.form-step');
+            let currentStep = 0;
 
-            document.addEventListener('DOMContentLoaded', function() {
-                loadDepartamentos();
-            });
-            
-            
-            function showStep(index) {
-                steps.forEach((step, i) => {
-                    step.style.display = i === index ? 'block' : 'none';
+            window.showStep = function (step) {
+                const formSteps = document.querySelectorAll('.form-step');
+                formSteps.forEach((stepElement, index) => {
+                    stepElement.style.display = index === step ? 'block' : 'none';
                 });
-                currentStep = index; // Actualizar el paso actual
+                currentStep = step;
             }
 
-            window.nextStep = function() {
-                showStep(currentStep + 1);
-            };
+            window.nextStep = function () {
+                const formSteps = document.querySelectorAll('.form-step');
+                if (currentStep < formSteps.length - 1) {
+                    showStep(currentStep + 1);
+                }
+            }
 
             window.prevStep = function() {
-                showStep(currentStep - 1);
-            };
+                if (currentStep > 0) {
+                    showStep(currentStep - 1);
+                }
+            }
 
+            window.validateAndShowPreview =  function () {
+                if (validateForm()) {
+                    showPreview();
+                }
+            }
 
-            window.showPreview = function() {
-                const formGroups = document.querySelectorAll('.form-step-active .form-group');
-                const previewSection = document.getElementById('preview');
+            // Definir la función hidePreview
+            window.hidePreview = function () {
+                    // Mostrar la primera sección del formulario y ocultar la vista previa
+                    document.getElementById('preview').style.display = 'none';
+                    showStep(0);
+                }
+                
+                // Inicializar la vista con el primer paso
+                document.addEventListener('DOMContentLoaded', () => {
+                    showStep(0);
+                });
+
+            window.showPreview = function () {
+                try {
+                    const N_colaborador = document.getElementById('N_colaborador').value;
+                    const departamento = document.getElementById('departamento').value;
+                    const N_empleado = document.getElementById('N_empleado').value;
+                    const Ape_paterno = document.getElementById('Ape_paterno').value;
+                    const Ape_materno = document.getElementById('Ape_materno').value;
+                    const correo = document.getElementById('correo').value;
+                    const telefono = document.getElementById('telefono').value;
+                    const folio = document.getElementById('folio').value;
+                    const fecha_reporte = document.getElementById('fecha_reporte').value;
+                    const tipo_inc = document.getElementById('tipo_inc').value;
+                    const dep_rep = document.getElementById('dep_rep').value;
+                    const descrip_inc = document.getElementById('descrip_inc').value;
+                    const fecha_atencion = document.getElementById('fecha_atencion').value;
+                    const firma_de_conformidad = document.getElementById('firma_de_conformidad').value;
             
-                if (previewSection) {
-                    // Limpiar la tabla dinámica previa en la vista previa
-                    const previewTableBody = document.getElementById('preview_dynamicTable').getElementsByTagName('tbody')[0];
-                    previewTableBody.innerHTML = '';
+                    document.getElementById('preview_N_colaborador').textContent = N_colaborador;
+                    document.getElementById('preview_departamento').textContent = departamento;
+                    document.getElementById('preview_N_empleado').textContent = N_empleado;
+                    document.getElementById('preview_Ape_paterno').textContent = Ape_paterno;
+                    document.getElementById('preview_Ape_materno').textContent = Ape_materno;
+                    document.getElementById('preview_correo').textContent = correo;
+                    document.getElementById('preview_telefono').textContent = telefono;
+                    document.getElementById('preview_folio').textContent = folio;
+                    document.getElementById('preview_fecha_reporte').textContent = fecha_reporte;
+                    document.getElementById('preview_tipo_inc').textContent = tipo_inc;
+                    document.getElementById('preview_dep_rep').textContent = dep_rep;
+                    document.getElementById('preview_descrip_inc').textContent = descrip_inc;
+                    document.getElementById('preview_fecha_atencion').textContent = fecha_atencion;
+                    document.getElementById('preview_firma_de_conformidad').textContent = firma_de_conformidad;
             
-                    // Obtener la referencia a la tabla dinámica original
-                    const dynamicTableBody = document.getElementById('dynamicTable').getElementsByTagName('tbody')[0];
+                    // Mostrar todas las imágenes cargadas en el contenedor de vista previa
+                    const previewEvidenciaContainer = document.getElementById('preview_evidencia_container');
+                    previewEvidenciaContainer.innerHTML = ''; // Limpiar el contenedor de vista previa antes de agregar nuevas imágenes
             
-                    // Iterar sobre cada fila de la tabla dinámica y agregarla a la vista previa
-                    for (let i = 0; i < dynamicTableBody.rows.length; i++) {
-                        const newRow = previewTableBody.insertRow();
-                        for (let j = 0; j < dynamicTableBody.rows[i].cells.length; j++) {
-                            const cell = newRow.insertCell();
-                            // Copiar el contenido HTML de la celda
-                            cell.innerHTML = dynamicTableBody.rows[i].cells[j].innerHTML;
-                        }
-                    }
-            
-                    // Iterar sobre los otros elementos del formulario y actualizar la vista previa
-                    formGroups.forEach(formGroup => {
-                        const input = formGroup.querySelector('input, select, textarea');
-                        const previewElement = document.getElementById('preview_' + input.id);
-            
-                        if (input && previewElement) {
-                            previewElement.textContent = input.value;
-                        } else {
-                            console.error('Elemento de formulario no encontrado en la vista previa');
-                        }
+                    const evidenceFiles = document.querySelectorAll('#my-dropzone .dz-preview img');
+                    evidenceFiles.forEach(file => {
+                        const img = document.createElement('img');
+                        img.src = file.src;
+                        img.style.width = '100px'; // Ajustar el tamaño según sea necesario
+                        img.style.margin = '5px';  // Espaciado entre imágenes
+                        previewEvidenciaContainer.appendChild(img);
                     });
             
-                    // Ocultar todos los pasos del formulario excepto la vista previa
-                    document.querySelectorAll('.form-step').forEach(step => {
-                        if (step !== previewSection) {
-                            step.style.display = 'none';
-                        }
-                    });
+                    // Ocultar pasos del formulario y mostrar la vista previa
+                    const formSteps = document.querySelectorAll('.form-step');
+                    formSteps.forEach(step => step.style.display = 'none');
             
-                    // Mostrar la vista previa
-                    previewSection.style.display = 'block';
-                } else {
-                    console.error('Sección de vista previa no encontrada.');
+                    document.getElementById('preview').style.display = 'block';
+                } catch (error) {
+                    console.error('Error in showPreview function:', error);
+                    alert('Ocurrió un error al mostrar la vista previa. Por favor, revise la consola para más detalles.');
                 }
             };
+            
 
-        window.editForm = function() {
-            // Ocultar la vista previa y mostrar el último paso del formulario
-            document.querySelectorAll('.form-step').forEach(step => {
-                step.style.display = 'block';
+            window.editForm = function () {
+                // Mostrar la primera sección del formulario y ocultar la vista previa
+                document.getElementById('preview').style.display = 'none';
+                showStep(0);
+            }
+            
+            // Inicializar la vista con el primer paso
+            showStep(0);
+
+            Dropzone.autoDiscover = false;
+
+            const myDropzone = new Dropzone("#my-dropzone", {
+                url: "#", // No necesita URL de carga ya que se maneja solo en frontend
+                addRemoveLinks: true, // Añade enlaces para eliminar archivos
+                dictRemoveFile: 'Remove',
+                maxFilesize: 5, // Tamaño máximo del archivo en MB
+                parallelUploads: 3, // Número máximo de archivos que se pueden cargar al mismo tiempo
+                autoProcessQueue: false, // No procesar automáticamente ya que no interactuamos con el servidor
+                maxFiles: 3, // Número máximo de archivos permitidos
+                acceptedFiles: "image/jpeg,image/png,image/jpg" // Extensiones permitidas
             });
+
+            document.getElementById('sendEmail').addEventListener('click', function() {
+                const formData = new FormData(document.getElementById('form2'));
             
-            document.getElementById('preview').style.display = 'none';
-        };
+                // Agregar archivos de Dropzone a formData
+                myDropzone.getAcceptedFiles().forEach(function(file, index) {
+                    formData.append('evidenceFiles[]', file, file.name);
+                    console.log(`File ${index + 1}: Name = ${file.name}, Size = ${file.size} bytes, Type = ${file.type}`);
+                });
             
-
-            window.submitForm = function () {
-                // Recoge los valores del formulario
-                var formData = new FormData(document.getElementById('form1'));
-
-                // Recoge los valores de la tabla dinámica
-                const dynamicTable = document.getElementById('dynamicTable');
-                if (dynamicTable) {
-                    const dynamicRows = dynamicTable.querySelectorAll('tbody tr');
-
-                    dynamicRows.forEach((row, index) => {
-                        const partida = row.querySelector('input[name="partida[]"]')?.value || '';
-                        const cantidad = row.querySelector('input[name="cantidad[]"]')?.value || '';
-                        const unidad = row.querySelector('input[name="unidad[]"]')?.value || '';
-                        const descripcion = row.querySelector('textarea[name="descripcion[]"]')?.value || '';
-
-                        formData.append(`partida[${index}]`, partida);
-                        formData.append(`cantidad[${index}]`, cantidad);
-                        formData.append(`unidad[${index}]`, unidad);
-                        formData.append(`descripcion[${index}]`, descripcion);
-                    });
+                // Depuración: Mostrar el contenido de formData
+                for (var pair of formData.entries()) {
+                    if (pair[1] instanceof File) {
+                        console.log(`${pair[0]}: ${pair[1].name}, Size: ${pair[1].size}, Type: ${pair[1].type}`);
+                    } else {
+                        console.log(`${pair[0]}: ${pair[1]}`);
+                    }
                 }
-
+            
                 // Crea una solicitud AJAX para enviar los datos al script PHP
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'Views/Resources/php/enviarsolicitudmercan.php', true);
-
+                xhr.open('POST', 'Views/Resources/php/enviarreporte_de_incidencias.php', true);
+            
                 // Define qué hacer cuando la respuesta es recibida
                 xhr.onload = function () {
                     if (xhr.status === 200) {
@@ -119,137 +153,71 @@ document.addEventListener('DOMContentLoaded', function () {
                                 alert(response.error); // Mensaje de error
                             }
                         } catch (e) {
-                            console.error('Error al parsear la respuesta JSON:', e);
-                            alert('Error inesperado al procesar la respuesta del servidor.');
+                            alert('Formulario enviado correctamente.');
                         }
                     } else {
-                        console.error('Error al enviar la solicitud AJAX:', xhr.statusText);
                         alert('Error inesperado al intentar enviar el formulario.');
                     }
                 };
-
+            
                 // Envía los datos del formulario
                 xhr.send(formData);
-            };
+            });
+
+            // Generate unique folio and set it to read-only input
+            const folioInput = document.getElementById('folio');
+            if (folioInput) {
+                folioInput.value = generateUniqueFolio();
+                folioInput.readOnly = true; // Make the field read-only
+            }
+
+            function generateUniqueFolio () {
+                // Obtener el contador actual de localStorage, si no existe, inicializarlo en 50
+                let counter = localStorage.getItem('folioCounter');
+                if (counter === null) {
+                    counter = 50; // Comenzar desde 50
+                } else {
+                    counter = parseInt(counter, 10);
+                }
+            
+                // Generar el folio único a partir del contador
+                const folio = counter;
+            
+                // Incrementar el contador y guardarlo en localStorage
+                localStorage.setItem('folioCounter', counter + 1);
+            
+                return folio;
+            }
+
+
 
             function updateDateTime() {
                 const now = new Date();
                 const date = now.toLocaleDateString();
                 const time = now.toLocaleTimeString();
-
+            
                 const datetimeElement = document.getElementById('datetime');
                 if (datetimeElement) {
                     datetimeElement.textContent = `${date} ${time}`;
                 }
             }
-
+        
             function setFechaPedido() {
                 const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0'); // Los meses empiezan desde 0
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+                const fechaPedido = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            
                 const fechaPedidoInput = document.getElementById('fecha_reporte');
-                fechaPedidoInput.value = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+                fechaPedidoInput.value = fechaPedido;
             }
-
+            
             setFechaPedido();
             setInterval(updateDateTime, 1000);
             updateDateTime();
-
-window.rowCount = 1; // Inicializa un contador de filas al cargar la página
-
-// Función para agregar una nueva fila a la tabla dinámica
-// Función para agregar una nueva fila a la tabla dinámica
-window.addRow = function() {
-    const table = document.getElementById('dynamicTable');
-    table.style.display = 'table'; // Mostrar la tabla si estaba oculta
-
-    const tbody = table.getElementsByTagName('tbody')[0];
-    const lastRow = tbody.rows[tbody.rows.length - 1]; // Obtén la última fila actual
-    const lastRowCount = lastRow ? parseInt(lastRow.cells[0].querySelector('input[type="text"][name="numero"]').value) : 0;
-
-    const newRow = tbody.insertRow();
-
-    const cell1 = newRow.insertCell(0);
-    const cell2 = newRow.insertCell(1);
-    const cell3 = newRow.insertCell(2);
-    const cell4 = newRow.insertCell(3);
-    const cell5 = newRow.insertCell(4);
-
-    cell1.innerHTML = `<input type="text" class="form-control" name="numero" value="${lastRowCount + 1}" readonly>`; // Usa el contador como valor
-    cell2.innerHTML = `<input type="number" class="form-control" name="cantidad[]" placeholder="Cantidad" min="0">`; // Agregado min="0" para evitar números negativos
-    cell3.innerHTML = `<input type="text" class="form-control" name="unidad[]" placeholder="Unidad">`;
-    cell4.innerHTML = `<textarea class="form-control" name="descripcion[]" placeholder="Descripción"></textarea>`;
-    cell5.innerHTML = `<button type="button" class="btn btn-danger btn-sm" onclick="deleteRow(this)">Eliminar</button>`;
-};
-
-
-// Función para eliminar una fila de la tabla dinámica
-window.deleteRow = function(button) {
-    const row = button.closest('tr'); // Encuentra la fila más cercana al botón
-    const tbody = row.parentNode;
-    row.remove(); // Elimina la fila del DOM
-
-    // Actualiza los números de partida después de eliminar la fila
-    updateRowNumbers(tbody);
-
-    // Oculta la tabla si ya no hay filas
-    const table = document.getElementById('dynamicTable');
-    if (tbody.rows.length === 0) {
-        table.style.display = 'none';
-    }
-};
-
-// Función para actualizar los números de partida después de eliminar una fila
-function updateRowNumbers(tbody) {
-    // Recorre todas las filas del tbody y actualiza los números de partida
-    Array.from(tbody.rows).forEach((row, index) => {
-        const cell1 = row.cells[0];
-        if (cell1.querySelector('input[type="text"][name="numero"]')) {
-            cell1.querySelector('input[type="text"][name="numero"]').value = index + 1;
-        }
-    });
-}
-
         });
-
-
-        // Función para generar un folio único
-        function generateUniqueFolio(formIdentifier) {
-            // Obtener la fecha actual en formato YYYYMMDD
-            const date = new Date();
-            const year = date.getFullYear();
-            const month = ('0' + (date.getMonth() + 1)).slice(-2);
-            const day = ('0' + date.getDate()).slice(-2);
-            const dateString = `${year}${month}${day}`;
-        
-            // Obtener el contador actual de localStorage, si no existe, inicializarlo en 0
-            let counter = localStorage.getItem(`${formIdentifier}_folioCounter`);
-            if (counter === null) {
-                counter = 0;
-            } else {
-                counter = parseInt(counter, 10);
-            }
-        
-            // Incrementar el contador y guardarlo en localStorage
-            counter += 1;
-            localStorage.setItem(`${formIdentifier}_folioCounter`, counter);
-        
-            // Generar el folio único combinando la fecha, identificador y el contador
-            const folio = `${formIdentifier}-${dateString}${('000000' + counter).slice(-6)}`;
-        
-            return folio;
-        }
-        
-        document.addEventListener('DOMContentLoaded', function () {
-            const steps = document.querySelectorAll('.form-step');
-            let currentStep = 0;
-        
-            // Identificador único para el formulario (puedes ajustarlo según tu estructura)
-            const formIdentifier = 'INC'; // Ejemplo: 'INC' para incidencias
-        
-            // Generate unique folio and set it to read-only input
-            const folioInput = document.getElementById('folio');
-            if (folioInput) {
-                folioInput.value = generateUniqueFolio(formIdentifier);
-                folioInput.readOnly = true; // Hacer el campo de solo lectura
-            }
-    // Resto del código para el manejo de pasos, vista previa, etc.
-});

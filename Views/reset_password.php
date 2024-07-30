@@ -2,7 +2,6 @@
 session_start();
 include '../Controllers/ContacsClientsController.php';
 include '../Models/BLcontacsClients.php';
-
 // Verificar si el token está presente en la URL
 if (isset($_GET['token'])) {
     $token = $_GET['token'];

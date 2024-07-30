@@ -1,7 +1,7 @@
 <style>
     .alert-fixed {
         position: fixed;
-        top: 60px;
+        top: 45px;
         right: 20px;
         z-index: 9999;
         width: 400px;
@@ -15,6 +15,22 @@ $idCliente = isset($_GET['idCliente']) ? $_GET['idCliente'] : '';
 
 // Variable para mensaje de error
 $mensaje = '';
+
+// Mostrar mensajes de alerta desde la sesión
+if (isset($_SESSION['alert_message']) && isset($_SESSION['alert_type'])) {
+    $alertMessage = $_SESSION['alert_message'];
+    $alertType = $_SESSION['alert_type'];
+
+    echo '<div id="alertBlock" class="alert-fixed alert alert-' . $alertType . ' alert-dismissible fade show mt-4" role="alert">
+            <div class="d-flex align-items-center">
+                <div class="bg-' . $alertType . ' me-3 icon-item"><span class="fas fa-' . ($alertType === 'success' ? 'check-circle' : 'times-circle') . ' text-white fs-6"></span></div>
+                <p class="mb-0 flex-1">' . $alertMessage . '</p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          </div>';
+    unset($_SESSION['alert_message']);
+    unset($_SESSION['alert_type']);
+}
 
 if ($idCliente) {
     // Instanciar el controlador ClienteController
@@ -39,47 +55,17 @@ if ($idCliente) {
                     </div>';
 }
 
-if (isset($_SESSION['alert_message']) && isset($_SESSION['alert_type'])) {
-    $alertMessage = $_SESSION['alert_message'];
-    $alertType = $_SESSION['alert_type'];
-    unset($_SESSION['alert_message']);
-    unset($_SESSION['alert_type']);
-
-    // Agregar el mensaje de alerta al mensaje general
-    $mensaje .= '<div id="alertBlock" class="alert-fixed alert alert-' . $alertType . ' alert-dismissible fade show mt-4" role="alert">
-                    <div class="d-flex align-items-center">
-                        <div class="bg-' . $alertType . ' me-3 icon-item"><span class="fas fa-check-circle text-white fs-6"></span></div>
-                        <p class="mb-0 flex-1">' . $alertMessage . '</p>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>';
-}
 
 if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['idContacto'])) {
     $idContacto = $_GET['idContacto'];
-
-    // Llama al método para bloquear el empleado
-    try {
-        ContactsClientsController::deleteContact($idContacto, $idCliente);
-        echo
-        '<div id="alertBlock" class="alert-fixed alert alert-success border-0 d-flex align-items-center" role="alert">
-            <div class="bg-success me-3 icon-item"><span class="fas fa-check-circle text-white fs-6"></span></div>
-            <p class="mb-0 flex-1">El contacto ha sido Eliminado correctamente.</p><button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>';
-    } catch (Exception $e) {
-        echo
-        '<div id="alertBlock" class="alert-fixed alert alert-danger border-0 d-flex align-items-center alert-fixed" role="alert">
-            <div class="bg-danger me-3 icon-item"><span class="fas fa-times-circle text-white fs-6"></span></div>
-            <p class="mb-0 flex-1">Error al Eliminar al contacto: ' . $e->getMessage() . '</p><button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>';
-    }
+    ContactsClientsController::deleteContact($idContacto, $idCliente);
 }
 ?>
 <div class="card-title text-white mt-4">
     <h3 class="mt-3">Información Clientes</h3>
 </div>
 
-<div id="tableExample3" data-list='{"valueNames":["nombre","email","tel","tipoContacto","semanada","finsemana","notas"],"page":10,"pagination":true}'>
+<div id="tableExample3" data-list='{"valueNames":["nombre","email","tel","tipoContacto","semanada","finsemana"],"page":5,"pagination":true}'>
     <div class="tab-content mt-3">
         <div class="d-flex justify-content-end align-items-center my-3">
             <a href="Clientes" class="btn btn-falcon-primary btn-sm ms-2" type="button">
@@ -123,7 +109,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['idCon
                                         <a class="btn btn-info me-2 btn-actualizar" data-bs-target="#update" data-bs-toggle="modal" data-id="<?php echo htmlspecialchars($row['idContacto']); ?>">
                                             <span class="fas fa-sync-alt"></span>
                                         </a>
-                                        <a class="btn btn-danger me-3" data-bs-toggle="modal" data-bs-target="#EliminarModal<?php echo htmlspecialchars($row['idContacto']); ?>">
+                                        <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#EliminarModal<?php echo htmlspecialchars($row['idContacto']); ?>">
                                             <span class="far fa-trash-alt"></span>
                                         </a>
                                     </div>
@@ -148,6 +134,28 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['idCon
         </div>
     </div>
 </div>
+
+<?php foreach ($cliente as $row) : ?>
+    <div class="modal fade" id="EliminarModal<?php echo htmlspecialchars($row['idContacto']); ?>" tabindex="-1" aria-labelledby="EliminarModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="EliminarModalLabel">Confirmar Acción</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de eliminar a <?php echo htmlspecialchars($row['nombre']); ?>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <a href="?action=delete&idContacto=<?php echo htmlspecialchars($row['idContacto']); ?>&idCliente=<?php echo htmlspecialchars($idCliente); ?>">
+                        <button type="button" class="btn btn-danger">Eliminar</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endforeach; ?>
 
 <!-- Moodal para Insertar Contacto -->
 <div class="modal fade" id="agregar" tabindex="-1" role="dialog" aria-labelledby="agregarModalLabel" aria-hidden="true">
@@ -290,26 +298,5 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['idCon
         });
     });
 </script>
-<?php foreach ($cliente as $row) : ?>
-    <div class="modal fade" id="EliminarModal<?php echo htmlspecialchars($row['idContacto']); ?>" tabindex="-1" aria-labelledby="EliminarModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="EliminarModalLabel">Confirmar Acción</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    ¿Estás seguro de eliminar a <?php echo htmlspecialchars($row['nombre']); ?>?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <a href="?action=delete&idContacto=<?php echo htmlspecialchars($row['idContacto']); ?>&idCliente=<?php echo htmlspecialchars($idCliente); ?>">
-                        <button type="button" class="btn btn-danger">Eliminar</button>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php endforeach; ?>
 
 <script src="Views/Resources/assets/js/alerts.js"></script>

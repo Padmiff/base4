@@ -115,14 +115,17 @@ document.addEventListener('DOMContentLoaded', () => {
       const numero = document.getElementById('numero').value;
   
       // Objeto con nombres de departamentos según sus IDs
-      const departamentos = {
-          1: 'Ventas',
-          2: 'Recursos Humanos',
-          3: 'Finanzas',
-          4: 'Producción',
-          5: 'Marketing'
-          // Agrega más departamentos según sea necesario
-      };
+	const departamentos = {
+			1: 'Administracion',
+			2: 'Laboratorio',
+			3: 'Mantenimiento industrial',
+			4: 'Taller automotriz',
+			5: 'Logística',
+			6: 'Sindicato',
+			7: 'Vigilancia',
+			8: 'Seguridad industrial'
+			// Agrega más departamentos según sea necesario
+		};
   
       // Establecer los valores en la vista previa
       document.getElementById('preview_N_empleado').textContent = N_empleado;

@@ -1,10 +1,15 @@
 <?php
-require_once "Connection.php";
+require_once "Connection.php"; //Conexion con la BD
 
 class BLclients
 {
     private static $conn;
 
+    /**
+     * Obtiene una instancia de conexión a la base de datos.
+     *
+     * La conexión a la base de datos.
+     */
     private static function getConnection()
     {
         if (!isset(self::$conn)) {
@@ -13,6 +18,12 @@ class BLclients
         return self::$conn;
     }
 
+    /**
+     * Obtiene todos los clientes activos.
+     *
+     * Array asociativo de clientes activos.
+     * En caso de error en la consulta.
+     */
     static public function getClientActive()
     {
         try {
@@ -29,9 +40,14 @@ class BLclients
         } catch (PDOException $e) {
             throw new Exception('Error en la consulta: ' . $e->getMessage());
         }
-        // $conn = null;
     }
 
+    /**
+     * Obtiene todos los clientes inactivos.
+     *
+     * Array asociativo de clientes inactivos.
+     * En caso de error en la consulta.
+     */
     static public function getClientInactive()
     {
         try {
@@ -50,15 +66,15 @@ class BLclients
         }
     }
 
+    /**
+     * Obtiene todos los clientes.
+     *
+     * Array asociativo de todos los clientes.
+     */
     static public function BLgetClientAll()
     {
         try {
             $conn = self::getConnection();
-
-            // $sql = "SELECT c.*, con.telefono, con.email
-            //         FROM client as c
-            //         LEFT JOIN contactocliente as con ON c.idCliente = con.idCliente
-            //         WHERE con.idTipoContato = 1 OR con.idTipoContato IS NULL";
 
             $sql = "SELECT * FROM client ";
 
@@ -72,6 +88,12 @@ class BLclients
         }
     }
 
+    /**
+     * Obtiene la información de un cliente específico por su ID.
+     *
+     * $idCliente El ID del cliente.
+     * Array asociativo con la información del cliente.
+     */
     static public function BLgetClientbyId($idCliente)
     {
         try {
@@ -96,6 +118,12 @@ class BLclients
         }
     }
 
+    /**
+     * Cambia el estado de cuenta de un cliente a 'Inactivo'.
+     *
+     * $idCliente El ID del cliente a bloquear.
+     * En caso de error en la consulta.
+     */
     static public function BLblockclient($idCliente)
     {
         try {
@@ -111,6 +139,12 @@ class BLclients
         }
     }
 
+    /**
+     * Cambia el estado de cuenta de un cliente a 'Activo'.
+     *
+     * $idCliente El ID del cliente a desbloquear.
+     * En caso de error en la consulta.
+     */
     static public function BLunlockclient($idCliente)
     {
         try {
@@ -126,6 +160,12 @@ class BLclients
         }
     }
 
+    /**
+     * Cambia el estado de cuenta de un cliente a 'Eliminado'.
+     *
+     * $idCliente El ID del cliente a eliminar.
+     * Exception En caso de error en la consulta.
+     */
     static public function BLdeleteclient($idCliente)
     {
         try {
@@ -141,6 +181,12 @@ class BLclients
         }
     }
 
+    /**
+     * Inserta un nuevo cliente en la base de datos.
+     *
+     * $datos Array asociativo con la información del nuevo cliente.
+     * Exception En caso de error al agregar el cliente.
+     */
     static public function BLpostInsertClients($datos)
     {
         try {
@@ -179,6 +225,12 @@ class BLclients
         }
     }
 
+    /**
+     * Actualiza la información de un cliente existente.
+     *
+     * $datos Array asociativo con la información actualizada del cliente, incluyendo el ID.
+     * En caso de error al actualizar el cliente.
+     */
     static public function BLpostUpdate($datos)
     {
         try {

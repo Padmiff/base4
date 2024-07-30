@@ -5,10 +5,11 @@ class ClientsController
     static public function getUsersActive()
     {
         try {
-            $clienteActivos = BLclients::getClientActive();
+            $clienteActivos = BLclients::getClientActive();  // Llama al método de la capa de negocios
 
-            return $clienteActivos;
+            return $clienteActivos; // Retorna los empleados activos obtenidos
         } catch (PDOException $e) {
+            // Manejo de errores
             echo 'Error al obtener clientes activos: ' . $e->getMessage();
         }
     }
@@ -16,10 +17,11 @@ class ClientsController
     static public function getUsersInactive()
     {
         try {
-            $clienteInactivos = BLclients::getClientInactive();
+            $clienteInactivos = BLclients::getClientInactive();  // Llama al método de la capa de negocios
 
-            return $clienteInactivos;
+            return $clienteInactivos; // Retorna los empleados activos obtenidos
         } catch (PDOException $e) {
+            // Manejo de errores
             echo 'Error al obtener clientes Bloqueados: ' . $e->getMessage();
         }
     }
@@ -27,19 +29,24 @@ class ClientsController
     static public function getClientAll()
     {
 
-        $clientes = BLclients::BLgetClientAll();
+        $clientes = BLclients::BLgetClientAll(); // Llama al método de la capa de negocios
 
-        return $clientes;
+        return $clientes; // Retorna los empleados activos obtenidos
     }
 
     static public function getClientbyId($idCliente)
     {
 
-        $cliente = BLclients::BLgetClientbyId($idCliente);
+        $cliente = BLclients::BLgetClientbyId($idCliente); // Llama al método de la capa de negocios
 
-        return $cliente;
+        return $cliente; // Retorna los empleados activos obtenidos
     }
 
+    /**
+     * Bloquea a un cliente específico.
+     *
+     * $idCliente El ID del cliente a bloquear.
+     */
     static public function blockclient($idCliente)
     {
         try {
@@ -49,6 +56,11 @@ class ClientsController
         }
     }
 
+    /**
+     * Desbloquea a un cliente específico.
+     *
+     *  $idCliente El ID del cliente a desbloquear.
+     */
     static public function unlockclient($idCliente)
     {
         try {
@@ -58,6 +70,11 @@ class ClientsController
         }
     }
 
+    /**
+     * Elimina a un cliente específico.
+     *
+     * $idCliente El ID del cliente a eliminar.
+     */
     static public function deleteclient($idCliente)
     {
         try {
@@ -67,6 +84,10 @@ class ClientsController
         }
     }
 
+    /**
+     * Inserta un nuevo cliente en la base de datos.
+     * Los datos del cliente son obtenidos desde un formulario POST.
+     */
     static public function postInsertClientes()
     {
         if (isset($_POST['registrar'])) {
@@ -90,15 +111,22 @@ class ClientsController
                 'foto' => $_POST['foto'],
             ];
             try {
+                // Llamar a la función del modelo para insertar en la base de datos   
                 BLclients::BLpostInsertClients($datos);
+                // Redirigir o mostrar un mensaje de éxito
                 echo '<script>window.location.href = "Clientes";</script>';
                 exit;
             } catch (Exception $e) {
+                // Manejar el error, mostrar un mensaje al usuario, registrar el error, etc.
                 echo "Error: " . $e->getMessage();
             }
         }
     }
 
+    /**
+     * Actualiza la información de un cliente existente en la base de datos.
+     * Los datos del cliente son obtenidos desde un formulario POST.
+     */
     static public function postUpdateClient()
     {
         if (isset($_POST['actualizar'])) {
@@ -121,10 +149,13 @@ class ClientsController
                 'foto' => $_POST['foto'],
             ];
             try {
+                // Llamar a la función del modelo para actualizar los datos
                 BLclients::BLpostUpdate($datos);
+                // Redirigir o mostrar un mensaje de éxito
                 echo '<script>window.location.href = "Clientes";</script>';
                 exit;
             } catch (Exception $e) {
+                // Manejar el error, mostrar un mensaje al usuario, registrar el error, etc.
                 echo "Error: " . $e->getMessage();
             }
         }

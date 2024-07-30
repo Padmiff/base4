@@ -2,6 +2,11 @@
 
 class ProvidersController
 {
+    /**
+     * Obtiene una lista de proveedores activos.
+     * 
+     * Lista de proveedores activos.
+     */
     static public function getUsersActive()
     {
         try {
@@ -14,6 +19,11 @@ class ProvidersController
         }
     }
 
+    /**
+     * Obtiene una lista de proveedores inactivos.
+     * 
+     * Lista de proveedores inactivos.
+     */
     static public function getUsersInactive()
     {
         try {
@@ -26,6 +36,11 @@ class ProvidersController
         }
     }
 
+    /**
+     * Obtiene todos los proveedores.
+     * 
+     * Lista de todos los proveedores.
+     */
     static public function getProvidersAll()
     {
         try {
@@ -37,6 +52,12 @@ class ProvidersController
         }
     }
 
+    /**
+     * Obtiene un proveedor específico por su ID.
+     * 
+     * $idProveedor ID del proveedor que se desea obtener.
+     * Datos del proveedor.
+     */
     static public function getProvidersbyId($idProveedor)
     {
         try {
@@ -48,6 +69,11 @@ class ProvidersController
         }
     }
 
+    /**
+     * Bloquea a un proveedor.
+     * 
+     * $idProveedor ID del proveedor que se desea bloquear.
+     */
     static public function blockprovider($idProveedor)
     {
         try {
@@ -58,6 +84,11 @@ class ProvidersController
         }
     }
 
+    /**
+     * Desbloquea a un proveedor.
+     * 
+     * $idProveedor ID del proveedor que se desea desbloquear.
+     */
     static public function unlockprovider($idProveedor)
     {
         try {
@@ -68,6 +99,11 @@ class ProvidersController
         }
     }
 
+    /**
+     * Elimina un proveedor del sistema.
+     * 
+     * $idProveedor ID del proveedor que se desea eliminar.
+     */
     static public function deleteprovider($idProveedor)
     {
         try {
@@ -78,6 +114,11 @@ class ProvidersController
         }
     }
 
+    /**
+     * Inserta un nuevo proveedor en el sistema.
+     * 
+     * Redirige a la página de proveedores o muestra un mensaje de error.
+     */
     static public function postInsertProveedores()
     {
         if (isset($_POST['registrar'])) {
@@ -101,18 +142,23 @@ class ProvidersController
                 'cuentaBancaria' => $_POST['cuentaBancaria'],
             ];
             try {
-
+                // Llamar a la función del modelo para insertar en la base de datos
                 BLproviders::BLpostInsertProviders($datos);
-
+                // Redirigir o mostrar un mensaje de éxito
                 echo '<script>window.location.href = "Proveedores";</script>';
                 exit;
             } catch (Exception $e) {
-
+                // Manejar el error, mostrar un mensaje al usuario, registrar el error, etc.
                 echo "Error: " . $e->getMessage();
             }
         }
     }
 
+    /**
+     * Actualiza los datos de un proveedor existente.
+     * 
+     * Redirige a la página de proveedores o muestra un mensaje de error.
+     */
     static public function postUpdateProveedores()
     {
         if (isset($_POST['actualizar'])) {
@@ -136,36 +182,13 @@ class ProvidersController
                 'cuentaBancaria' => $_POST['cuentaBancaria'],
             ];
             try {
-
+                // Llamar a la función del modelo para insertar en la base de datos
                 BLproviders::BLpostUpdate($datos);
-
+                // Redirigir o mostrar un mensaje de éxito
                 echo '<script>window.location.href = "Proveedores";</script>';
                 exit;
             } catch (Exception $e) {
-
-                echo "Error: " . $e->getMessage();
-            }
-        }
-    }
-
-    static public function InsertContactos()
-    {
-        if (isset($_POST['registrar'])) {
-            $idProveedorRedireccion = $_POST['idProveedor'];
-
-            $datos = [
-                'idProveedor' => $idProveedorRedireccion,
-                'nombreProveedor' => $_POST['nombreProveedor'],
-                'apellidoPaterno' => $_POST['apellidoPaterno'],
-                'apellidoMaterno' => $_POST['apellidoMaterno'],
-                'email' => $_POST['email'],
-                'notas' => $_POST['notas'],
-            ];
-            try {
-                BLproviders::BLInsertContactos($datos);
-                echo '<script>window.location.href = "Contacto?idProveedor=' . $idProveedorRedireccion . '";</script>';
-                exit;
-            } catch (Exception $e) {
+                // Manejar el error, mostrar un mensaje al usuario, registrar el error, etc.
                 echo "Error: " . $e->getMessage();
             }
         }

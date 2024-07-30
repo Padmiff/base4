@@ -1,10 +1,14 @@
 <?php
-
+// Importar las clases necesarias de PHPMailer
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 class ContactsClientsController
 {
+    /**
+     * Inserta un nuevo contacto en la base de datos.
+     * Los datos del contacto son obtenidos desde un formulario POST.
+     */
     static public function postInsertContactos()
     {
         if (isset($_POST['registrar'])) {
@@ -20,27 +24,26 @@ class ContactsClientsController
                 'estadoContacto' => $_POST['estadoContacto'],
             ];
             try {
-                ContacsClients::BLpostInsertContactos($datos);
+                $emailexistente = ContacsClients::BLverificarCorreoExistente($datos['email']);
+                if ($emailexistente) {
+                    $_SESSION['alert_message'] = 'Error: El correo ya está registrado.';
+                    $_SESSION['alert_type'] = 'warning';
+                } else {
+                    $idContacto = ContacsClients::BLpostInsertContactos($datos);
 
-                $idContacto = ContacsClients::obtenerIdUsuarioDesdeElCorreo($datos['email']);
+                    $token = self::generarToken($idContacto);
 
-                $token = self::generarToken($idContacto);
+                    self::enviarCorreo($datos, $datos['email'], $token);
 
-                self::enviarCorreo($datos, $datos['email'], $token);
-
-                $_SESSION['alert_message'] = 'Contacto agregado correctamente.';
-                $_SESSION['alert_type'] = 'success';
+                    $_SESSION['alert_message'] = 'Contacto agregado correctamente.';
+                    $_SESSION['alert_type'] = 'success';
+                }
 
                 echo '<script>window.location.href = "ContactosClientes?idCliente=' . $idClienteRedireccion . '";</script>';
                 exit;
             } catch (Exception $e) {
-                if ($e->getMessage() == 'El correo ya está registrado.') {
-                    $_SESSION['alert_message'] = 'Error: El correo ya está registrado.';
-                    $_SESSION['alert_type'] = 'warning';
-                } else {
-                    $_SESSION['alert_message'] = 'Error al agregar contacto: ' . $e->getMessage();
-                    $_SESSION['alert_type'] = 'danger';
-                }
+                $_SESSION['alert_message'] = 'Error al agregar contacto: ' . $e->getMessage();
+                $_SESSION['alert_type'] = 'danger';
 
                 echo '<script>window.location.href = "ContactosClientes?idCliente=' . $idClienteRedireccion . '";</script>';
                 exit;
@@ -48,21 +51,44 @@ class ContactsClientsController
         }
     }
 
+    /**
+     * Envía un correo electrónico al nuevo contacto.
+     *
+     *  $datos Los datos del contacto.
+     *  $correoDestinatario El correo electrónico del destinatario.
+     *  $token El token generado para la asignación de contraseña.
+     *
+     * Exception Si hay un error al enviar el correo.
+     */
     static private function enviarCorreo($datos, $correoDestinatario, $token)
     {
+        // Requerir el autoload de Composer para cargar automáticamente las dependencias
         require 'Views/Resources/php/vendor/autoload.php';
         // Configuración de PHPMailer
         $mail = new PHPMailer(true); // Instancia de PHPMailer con excepciones habilitadas
 
         try {
+            // Configuración del servidor SMTP
+            $mail->isSMTP(); // Enviar usando SMTP
+            $mail->Host       = 'smtp.ionos.mx'; // Servidor SMTP
+            $mail->SMTPAuth   = true; // Habilitar autenticación SMTP
+            $mail->Username   = 'servicios@correo.base4.mx'; // Usuario SMTP
+            $mail->Password   = '0202ChubacaC'; // Contraseña SMTP (debe almacenarse de forma segura)
+            $mail->SMTPSecure = 'ssl'; // Habilitar cifrado SSL
+            $mail->Port       = 465; // Puerto TCP para conectar
 
+            // Destinatario del correo
+            $mail->setFrom('servicios@correo.base4.mx', 'base4');
+            $mail->addAddress($correoDestinatario);
 
             // Formato del correo HTML
             $mail->isHTML(true);
             $mail->Subject = 'Agregar Contacto';
 
+            // Cambiar por la URL del servidor(
+            //  <a href='http://localhost/base4_ho/Views/reset_password.php?token=$token'</a>)
 
-
+            //Contenido del Correo
             $emailContent = "
 <html>
 <head>
@@ -167,6 +193,13 @@ class ContactsClientsController
         }
     }
 
+    /**
+     * Genera un token para la asignación de contraseña.
+     *
+     *  $idContacto El ID del contacto.
+     *
+     *  El token generado.
+     */
     static private function generarToken($idContacto)
     {
         $token = base64_encode(json_encode(['id' => $idContacto, 'timestamp' => time()]));
@@ -174,6 +207,10 @@ class ContactsClientsController
         return $token;
     }
 
+    /**
+     * Actualiza la contraseña de un contacto utilizando un token.
+     * Los datos son obtenidos desde un formulario POST.
+     */
     static public function passwordContacto()
     {
         if (isset($_POST['actualizar'])) {
@@ -200,7 +237,7 @@ class ContactsClientsController
 
             // Verificar si el token ha expirado
             $currentTime = time();
-            $tokenExpiryTime = 3600; // 1 hora
+            $tokenExpiryTime = 10800; // 3 horas
 
             if ($currentTime - $tokenTimestamp > $tokenExpiryTime) {
                 $_SESSION['alert_message'] = 'El token ha expirado.';
@@ -223,16 +260,21 @@ class ContactsClientsController
                 ContacsClients::BLpasswordContacto($password, $idContacto);
                 $_SESSION['alert_message'] = 'La contraseña se ha actualizado correctamente.';
                 $_SESSION['alert_type'] = 'success';
+                echo '<script>window.location.href = "http://localhost/base4_ho/Views/login.php";</script>';
+                exit;
             } catch (Exception $e) {
-                $_SESSION['alert_message'] = 'Error al actualizar la contraseña. Por favor, intente de nuevo.';
+                $_SESSION['alert_message'] = 'Error al actualizar la contraseña. Por favor, intente de nuevo.' . $e->getMessage();
                 $_SESSION['alert_type'] = 'danger';
+                echo '<script>window.location.href = "http://localhost/base4_ho/Views/reset_password.php?token=' . $token . '";</script>';
+                exit;
             }
-
-            echo '<script>window.location.href = "http://localhost/base4_ho/Views/login.php";</script>';
-            exit;
         }
     }
 
+    /**
+     * Actualiza los datos del  contacto.
+     * Los datos son obtenidos desde un formulario POST.
+     */
     static public function postUpdateContact()
     {
         if (isset($_POST['actualizar'])) {
@@ -256,14 +298,21 @@ class ContactsClientsController
         }
     }
 
+    /**
+     * "Eliminar" los datos del  contacto.
+     * Cambia el estadoContacto a Eliminado (No se borran los datos de la BD).
+     */
     static public function deleteContact($idContacto, $idCliente)
     {
         try {
             ContacsClients::BLdeleteContacts($idContacto);
+            $_SESSION['alert_message'] = 'El contacto ha sido eliminado correctamente.';
+            $_SESSION['alert_type'] = 'success';
             echo '<script>window.location.href = "ContactosClientes?idCliente=' . $idCliente . '";</script>';
             exit;
         } catch (Exception $e) {
-            echo 'Error al eliminar contacto: ' . $e->getMessage();
+            $_SESSION['alert_message'] = 'Error al eliminar el contacto: ' . htmlspecialchars($e->getMessage());
+            $_SESSION['alert_type'] = 'danger';
         }
     }
 }

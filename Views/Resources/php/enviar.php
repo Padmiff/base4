@@ -50,8 +50,8 @@ $html = '
         }
         .header {
             text-align: center;
-            background-color: #007bff;
-            color: #fff;
+            background-color: FFFFFF;
+            color: #000;
             padding: 10px 0;
             border-top-left-radius: 10px;
             border-top-right-radius: 10px;
@@ -87,7 +87,7 @@ $html = '
 <body>
     <div class="container">
         <div class="header">
-              <img src="formularios/img/logo.png" alt="Logo">
+              <img src="../img/logo.png" alt="Harina de Oriente">
             <h1>Detalles del Colaborador</h1>
         </div>
         <div class="details">
@@ -149,7 +149,7 @@ try {
     $mail->Subject = 'Detalles del Colaborador';
 
     // Construir el cuerpo del mensaje HTML personalizado con estilos CSS
-    $logoUrl = 'formularios/img/logo.png'; // Ruta local al logo
+    $logoUrl = 'https://www.harineradeoriente.mx/wp-content/uploads/2023/09/1200-X-630.png'; // Ruta local al logo
     $message = '
     <html>
     <head>
@@ -168,8 +168,8 @@ try {
                 box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             }
             .header {
-                background-color: #007bff;
-                color: #ffffff;
+                background-color: #ffffff;
+                color: #000000;
                 padding: 10px;
                 text-align: center;
                 border-top-left-radius: 10px;

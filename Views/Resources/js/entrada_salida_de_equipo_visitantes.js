@@ -10,83 +10,85 @@ document.addEventListener('DOMContentLoaded', function () {
         folioInput.readOnly = true; // Make the field read-only
     }
     
-    function showStep(index) {
-        steps.forEach((step, i) => {
-            step.style.display = i === index ? 'block' : 'none';
+    window.showStep = function (step) {
+        const formSteps = document.querySelectorAll('.form-step');
+        formSteps.forEach((stepElement, index) => {
+            stepElement.style.display = index === step ? 'block' : 'none';
         });
-        currentStep = index; // Actualizar el paso actual
+        currentStep = step;
     }
 
-    window.nextStep = function() {
-        showStep(currentStep + 1);
-    };
+    window.nextStep = function () {
+        const formSteps = document.querySelectorAll('.form-step');
+        if (currentStep < formSteps.length - 1) {
+            showStep(currentStep + 1);
+        }
+    }
 
     window.prevStep = function() {
-        showStep(currentStep - 1);
-    };
+        if (currentStep > 0) {
+            showStep(currentStep - 1);
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        window.showPreview = function () {
+            // Tu código aquí
+        };
+    });
 
-    window.showPreview = function() {
-        // Obtener los valores del formulario
-        var fecha_de_solicitud = document.getElementById('fecha_de_solicitud').value;
-        var nombre_empresa = document.getElementById('nombre_empresa').value;
-        var nombre_visitante = document.getElementById('nombre_visitante').value;
-        var correo = document.getElementById('correo').value;
-        var telefono = document.getElementById('telefono').value;
-        var folio = document.getElementById('folio').value;
-        var prioridad = document.getElementById('prioridad').value;
-        var entrada_o_salida = document.getElementById('entrada_o_salida').value;
-        var fecha_devolucion = document.getElementById('fecha_devolucion').value;
-        var fines_utilizacion = document.getElementById('fines_utilizacion').value;
-        var caracteristicas = getCaracteristicas(); // Función para obtener las características del equipo
-        var evidenciaInput = document.getElementById('evidencia');
-        var nombre_responsable = document.getElementById('nombre_responsable').value;
-        var firma_de_responsable = document.getElementById('firma_de_responsable').value;
-        var aceptacion_de_responsabilidad = document.getElementById('aceptación_de_responsabilidad').checked ? 'Aceptado' : 'No aceptado';
-        var nombre_aut_ho = document.getElementById('nombre_aut_ho').value;
-        var correo_aut_ho = document.getElementById('correo_aut_ho').value;
-        var firma_aut_ho = document.getElementById('firma_aut_ho').value;
+    window.showPreview = function () {
+        document.getElementById('preview_fecha_de_solicitud').textContent = document.getElementById('fecha_de_solicitud').value;
+        document.getElementById('preview_nombre_empresa').textContent = document.getElementById('nombre_empresa').value;
+        document.getElementById('preview_nombre_visitante').textContent = document.getElementById('nombre_visitante').value;
+        document.getElementById('preview_correo').textContent = document.getElementById('correo').value;
+        document.getElementById('preview_telefono').textContent = document.getElementById('telefono').value;
+        document.getElementById('preview_folio').textContent = document.getElementById('folio').value;
+        document.getElementById('preview_prioridad').textContent = document.getElementById('prioridad').value;
+        document.getElementById('preview_entrada_o_salida').textContent = document.getElementById('entrada_o_salida').value;
+        document.getElementById('preview_fecha_devolucion').textContent = document.getElementById('fecha_devolucion').value;
+        document.getElementById('preview_fines_utilizacion').textContent = document.getElementById('fines_utilizacion').value;
     
-        // Establecer los valores en la vista previa
-        document.getElementById('preview_fecha_de_solicitud').textContent = fecha_de_solicitud;
-        document.getElementById('preview_nombre_empresa').textContent = nombre_empresa;
-        document.getElementById('preview_nombre_visitante').textContent = nombre_visitante;
-        document.getElementById('preview_correo').textContent = correo;
-        document.getElementById('preview_telefono').textContent = telefono;
-        document.getElementById('preview_folio').textContent = folio;
-        document.getElementById('preview_prioridad').textContent = prioridad;
-        document.getElementById('preview_entrada_o_salida').textContent = entrada_o_salida;
-        document.getElementById('preview_fecha_devolucion').textContent = fecha_devolucion;
-        document.getElementById('preview_fines_utilizacion').textContent = fines_utilizacion;
-        document.getElementById('preview_caracteristicas').innerHTML = caracteristicas;
-    
-        // Mostrar la vista previa del archivo de evidencia si está disponible
-        var evidenciaPreview = document.getElementById('preview_evidencia');
-        if (evidenciaInput && evidenciaInput.files.length > 0) {
-            var evidenciaURL = URL.createObjectURL(evidenciaInput.files[0]);
-            evidenciaPreview.src = evidenciaURL;
-            evidenciaPreview.style.display = 'block';
-        } else {
-            evidenciaPreview.style.display = 'none';
+        // Actualiza la tabla dinámica
+        const dynamicTable = document.getElementById('dynamicTable');
+        const previewDynamicTable = document.getElementById('preview_dynamicTable');
+        previewDynamicTable.querySelector('tbody').innerHTML = '';
+        
+        for (let i = 0; i < dynamicTable.rows.length; i++) {
+            const row = dynamicTable.rows[i];
+            const cells = row.cells;
+            if (cells.length > 0) {
+                const newRow = previewDynamicTable.insertRow();
+                for (let j = 0; j < cells.length; j++) {
+                    const newCell = newRow.insertCell();
+                    newCell.textContent = cells[j].textContent;
+                }
+            }
         }
     
-        document.getElementById('preview_nombre_responsable').textContent = nombre_responsable;
-        document.getElementById('preview_firma_de_responsable').textContent = firma_de_responsable;
-        document.getElementById('preview_aceptacion_de_responsabilidad').textContent = aceptacion_de_responsabilidad;
-        document.getElementById('preview_nombre_aut_ho').textContent = nombre_aut_ho;
-        document.getElementById('preview_correo_aut_ho').textContent = correo_aut_ho;
-        document.getElementById('preview_firma_aut_ho').textContent = firma_aut_ho;
+        // Muestra la imagen de evidencia si se ha cargado
+        const evidenceFile = document.querySelector('#my-dropzone .dz-preview img');
+        if (evidenceFile) {
+            document.getElementById('preview_evidencia').src = evidenceFile.src;
+            document.getElementById('preview_evidencia').style.display = 'block';
+        }
     
-        // Mostrar la vista previa y ocultar el formulario principal
-        document.getElementById('form2').style.display = 'none';
+        // Actualiza otros campos de vista previa
+        document.getElementById('preview_nombre_responsable').textContent = document.getElementById('nombre_responsable').value;
+        document.getElementById('preview_firma_de_responsable').textContent = document.getElementById('firma_de_responsable').value;
+        document.getElementById('preview_aceptacion_de_responsabilidad').textContent = document.getElementById('aceptacionRes').checked ? 'Aceptado' : 'No Aceptado';
+        document.getElementById('preview_nombre_aut_ho').textContent = document.getElementById('nombre_aut_ho').value;
+        document.getElementById('preview_correo_aut_ho').textContent = document.getElementById('correo_aut_ho').value;
+        document.getElementById('preview_firma_aut_ho').textContent = document.getElementById('firma_aut_ho').value;
+    
+        // Mostrar la vista previa y ocultar el formulario
+        document.querySelector('.form-step-active').style.display = 'none';
         document.getElementById('previewSection').style.display = 'block';
     }
-
-
-// Función para ocultar la vista previa y volver al formulario principal
-window.hidePreview = function() {
-    document.getElementById('form2').style.display = 'block';
-    document.getElementById('previewSection').style.display = 'none';
-}
+    
+    window.hidePreview = function () {
+        document.getElementById('previewSection').style.display = 'none';
+        document.querySelector('.form-step').style.display = 'block';
+    }
 
 // Función para obtener las características del equipo y formatearlas como HTML
 window. getCaracteristicas = function() {
@@ -182,93 +184,97 @@ window. getCaracteristicas = function() {
         const now = new Date();
         const date = now.toLocaleDateString();
         const time = now.toLocaleTimeString();
-
+    
         const datetimeElement = document.getElementById('datetime');
         if (datetimeElement) {
             datetimeElement.textContent = `${date} ${time}`;
         }
     }
-
+    
     function setFechaPedido() {
         const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // Los meses empiezan desde 0
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+    
+        const fechaPedido = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    
         const fechaPedidoInput = document.getElementById('fecha_de_solicitud');
-        fechaPedidoInput.value = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+        fechaPedidoInput.value = fechaPedido;
     }
-
+    
     setFechaPedido();
-
     setInterval(updateDateTime, 1000);
-
     updateDateTime();
 
-    window.rowCount = 1; // Inicializa un contador de filas
+    let rowCount = 1;
 
-    window.addRow = function() {
-        const table = document.getElementById('dynamicTable');
-        table.style.display = 'table'; // Mostrar la tabla si está oculta
-    
-        const tbody = table.getElementsByTagName('tbody')[0];
-        const newRow = tbody.insertRow();
-    
-        const cell1 = newRow.insertCell(0);
-        const cell2 = newRow.insertCell(1);
-        const cell3 = newRow.insertCell(2);
-        const cell4 = newRow.insertCell(3);
-        const cell5 = newRow.insertCell(4);
-        const cell6 = newRow.insertCell(5);
-    
-        // Contenido de las celdas
-        cell1.innerHTML = `
-            <select name="tipo_equipo">
-                <option value="Laptop">Laptop</option>
-                <option value="PC de escritorio">PC de escritorio</option>
-                <option value="Tableta">Tableta</option>
-                <option value="Monitor/Pantalla/Proyector">Monitor/Pantalla/Proyector</option>
-                <option value="Equipos de impresion y multifuncionales">Equipos de impresión y multifuncionales</option>
-                <option value="Hardware (teclado/mouse/videocámaras/adaptadores)">Hardware (teclado/mouse/videocámaras/adaptadores)</option>
-                <option value="Otro">Otro</option>
-            </select>
+    window.addRow = function () {
+        const table = document.getElementById('dynamicTable').getElementsByTagName('tbody')[0];
+        
+        // First row with inputs
+        const newRow = table.insertRow();
+        newRow.innerHTML = `
+            <td>
+                <select name="tipo_equipo[]" class="form-select form-select-sm">
+                    <option>-- Seleccione --</option>
+                    <option value="Laptop">Laptop</option>
+                    <option value="PC de escritorio">PC de escritorio</option>
+                    <option value="Tableta">Tableta</option>
+                    <option value="Monitor/Pantalla/Proyector">Monitor/Pantalla/Proyector</option>
+                    <option value="Equipos de impresión y multifuncionales">Equipos de impresión y multifuncionales</option>
+                    <option value="Hardware (teclado/mouse/videocámaras/adaptadores)">Hardware (teclado/mouse/videocámaras/adaptadores)</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </td>
+            <td><input class="form-control form-control-sm" type="text" name="marca[]"></td>
+            <td><input class="form-control form-control-sm" type="text" name="modelo[]"></td>
+            <td><input class="form-control form-control-sm" type="text" name="numero_serie[]"></td>
+            <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Eliminar</button></td>
         `;
-        cell2.innerHTML = `<input type="text" name="marca" placeholder="Marca">`;
-        cell3.innerHTML = `<input type="text" name="modelo" placeholder="Modelo">`;
-        cell4.innerHTML = `<input type="text" name="numero_serie" placeholder="Número de serie">`;
-        cell5.innerHTML = `<input type="text" name="pertenece_a_ho" placeholder="¿Este equipo pertenece a HO? *">`;
-        cell6.innerHTML = `<button type="button" onclick="deleteRow(this)">Eliminar</button>`;
-    };
     
-    window.deleteRow = function(button) {
-        const row = button.closest('tr');
-        row.remove();
+        // Second row with radio buttons
+        const newRadioRow = table.insertRow();
+        newRadioRow.innerHTML = `
+            <td colspan="5">
+                <label>¿Este equipo pertenece a HO?<span class="text-danger"> *</span></label>
+                <div>
+                    <input type="radio" class="form-check-input me-2" name="pertenece_a_ho_${rowCount}" value="si" required>Si
+                    <input type="radio" class="form-check-input me-2" name="pertenece_a_ho_${rowCount}" value="no" required>No
+                </div>
+            </td>
+        `;
     
-        const table = document.getElementById('dynamicTable').querySelector('tbody');
-        if (table.rows.length === 0) {
-            document.getElementById('dynamicTable').style.display = 'none'; // Ocultar la tabla si no hay filas
+        rowCount++;
+    }
+    
+    window.removeRow = function (button) {
+        const row = button.parentNode.parentNode;
+        const radioRow = row.nextElementSibling;
+        row.parentNode.removeChild(row);
+        if (radioRow) {
+            row.parentNode.removeChild(radioRow);
         }
-    };
+    }
 
 
     function generateUniqueFolio() {
-        // Obtener la fecha actual en formato YYYYMMDD
-        const date = new Date();
-        const year = date.getFullYear();
-        const month = ('0' + (date.getMonth() + 1)).slice(-2);
-        const day = ('0' + date.getDate()).slice(-2);
-        const dateString = `${year}${month}${day}`;
-    
-        // Obtener el contador actual de localStorage, si no existe, inicializarlo en 0
+        // Obtener el contador actual de localStorage, si no existe, inicializarlo en 50
         let counter = localStorage.getItem('folioCounter');
         if (counter === null) {
-            counter = 0;
+            counter = 50; // Comenzar desde 50
         } else {
             counter = parseInt(counter, 10);
         }
     
-        // Incrementar el contador y guardarlo en localStorage
-        counter += 1;
-        localStorage.setItem('folioCounter', counter);
+        // Generar el folio único a partir del contador
+        const folio = counter;
     
-        // Generar el folio único combinando la fecha y el contador
-        const folio = `${dateString}${('000000' + counter).slice(-6)}`;
+        // Incrementar el contador y guardarlo en localStorage
+        localStorage.setItem('folioCounter', counter + 1);
     
         return folio;
     }

@@ -3,8 +3,16 @@ require_once "Connection.php";
 
 class BLproviders
 {
+    // Variable para almacenar la conexión a la base de datos
     private static $conn;
 
+    /**
+     * Obtiene la conexión a la base de datos.
+     * 
+     * Si la conexión aún no está establecida, se crea una nueva. De lo contrario, se devuelve la conexión existente.
+     * 
+     * La conexión a la base de datos.
+     */
     private static function getConnection()
     {
         if (!isset(self::$conn)) {
@@ -13,6 +21,14 @@ class BLproviders
         return self::$conn;
     }
 
+    /**
+     * Obtiene todos los proveedores activos.
+     * 
+     * Ejecuta una consulta SQL para obtener proveedores cuyo estado es 'Activo'.
+     * 
+     * Un array de proveedores activos en formato asociativo.
+     * Si ocurre un error en la consulta SQL.
+     */
     static public function getProvidersActive()
     {
         try {
@@ -31,6 +47,14 @@ class BLproviders
         }
     }
 
+    /**
+     * Obtiene todos los proveedores inactivos.
+     * 
+     * Ejecuta una consulta SQL para obtener proveedores cuyo estado es 'Inactivo'.
+     * 
+     * Un array de proveedores inactivos en formato asociativo.
+     * Si ocurre un error en la consulta SQL.
+     */
     static public function getProvidersInactive()
     {
         try {
@@ -49,15 +73,18 @@ class BLproviders
         }
     }
 
+    /**
+     * Obtiene todos los proveedores.
+     * 
+     * Ejecuta una consulta SQL para obtener todos los proveedores sin filtrar por estado.
+     * 
+     * Un array de todos los proveedores en formato asociativo.
+     * Si ocurre un error en la consulta SQL.
+     */
     static public function BLgetProvidersAll()
     {
         try {
             $conn = self::getConnection();
-
-            // $sql = "SELECT p.*,c.telefono, c.email
-            //         FROM proveedores as p
-            //         LEFT JOIN contactoproveedor as c ON p.idProveedor = c.idProveedor
-            //         WHERE c.idTipoContacto = 1 OR c.idTipoContacto IS NULL";
 
             $sql = "SELECT * FROM proveedores";
 
@@ -72,6 +99,15 @@ class BLproviders
         }
     }
 
+    /**
+     * Obtiene contactos de un proveedor específico por ID.
+     * 
+     * Ejecuta una consulta SQL para obtener todos los contactos asociados a un proveedor
+     * filtrados por el ID del proveedor y estado del contacto 'Activo'.
+     * 
+     * $idProveedor El ID del proveedor para obtener sus contactos.
+     * Un array de contactos en formato asociativo.
+     */
     static public function BLgetProvidersbyId($idProveedor)
     {
         try {
@@ -80,7 +116,8 @@ class BLproviders
             $sql = "SELECT c.*, t.tipoContacto
                     FROM contactoproveedor as c
                     LEFT JOIN tipocontacto as t ON c.idTipoContacto = t.idTipoContacto
-                    WHERE c.idProveedor = :idProveedor";
+                    WHERE c.idProveedor = :idProveedor
+                    AND c.estadoContacto = 'Activo'";
 
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':idProveedor', $idProveedor, PDO::PARAM_STR);
@@ -95,6 +132,14 @@ class BLproviders
         }
     }
 
+    /**
+     * Bloquea (marca como inactivo) un proveedor por ID.
+     * 
+     * Ejecuta una consulta SQL para actualizar el estado del proveedor a 'Inactivo'.
+     * 
+     * $idProveedor El ID del proveedor a bloquear.
+     * Si ocurre un error en la consulta SQL.
+     */
     static public function BLblockprovider($idProveedor)
     {
         try {
@@ -110,6 +155,14 @@ class BLproviders
         }
     }
 
+    /**
+     * Desbloquea (marca como activo) un proveedor por ID.
+     * 
+     * Ejecuta una consulta SQL para actualizar el estado del proveedor a 'Activo'.
+     * 
+     * $idProveedor El ID del proveedor a desbloquear.
+     * Si ocurre un error en la consulta SQL.
+     */
     static public function BLunlockprovider($idProveedor)
     {
         try {
@@ -125,6 +178,14 @@ class BLproviders
         }
     }
 
+    /**
+     * Marca un proveedor como eliminado (cambia el estado a 'Eliminado') por ID.
+     * 
+     * Ejecuta una consulta SQL para actualizar el estado del proveedor a 'Eliminado'.
+     * 
+     * $idProveedor El ID del proveedor a eliminar.
+     * Si ocurre un error en la consulta SQL.
+     */
     static public function BLdeleteprovider($idProveedor)
     {
         try {
@@ -140,6 +201,14 @@ class BLproviders
         }
     }
 
+    /**
+     * Inserta un nuevo proveedor en la base de datos.
+     * 
+     * Ejecuta una consulta SQL para insertar un nuevo proveedor con los datos proporcionados.
+     * 
+     * $datos Un array asociativo con los datos del proveedor a insertar.
+     * Si ocurre un error en la consulta SQL.
+     */
     static public function BLpostInsertProviders($datos)
     {
         try {
@@ -177,6 +246,14 @@ class BLproviders
         }
     }
 
+    /**
+     * Actualiza los datos de un proveedor existente.
+     * 
+     * Ejecuta una consulta SQL para actualizar los datos del proveedor con la ID especificada.
+     * 
+     * $datos Un array asociativo con los datos del proveedor a actualizar. Debe incluir 'idProveedor'.
+     * Si ocurre un error en la consulta SQL.
+     */
     static public function BLpostUpdate($datos)
     {
         try {
@@ -205,29 +282,6 @@ class BLproviders
             $stmt->bindParam(':tipoBanco', $datos['tipoBanco']);
             $stmt->bindParam(':cuentaBancaria', $datos['cuentaBancaria']);
             $stmt->bindParam(':idProveedor', $datos['idProveedor']);
-
-            $stmt->execute();
-        } catch (PDOException $e) {
-            throw new Exception('Error al actualizar Colaborador ' . $e->getMessage());
-        }
-    }
-
-    static public function BLInsertContactos($datos)
-    {
-        try {
-            $conn = self::getConnection();
-
-            $sql = "INSERT INTO contactoproveedor(idProveedor, nombreProveedor, apellidoPaterno, apellidoMaterno, email, notas)
-                    VALUES(:idProveedor, :nombreProveedor, :apellidoPaterno, :apellidoMaterno, :email, :notas);";
-
-            $stmt = $conn->prepare($sql);
-
-            $stmt->bindParam(':idProveedor', $datos['idProveedor']);
-            $stmt->bindParam('nombreProveedor', $datos['nombreProveedor']);
-            $stmt->bindParam('apellidoPaterno', $datos['apellidoPaterno']);
-            $stmt->bindParam('apellidoMaterno', $datos['apellidoMaterno']);
-            $stmt->bindParam('email', $datos['email']);
-            $stmt->bindParam('notas', $datos['notas']);
 
             $stmt->execute();
         } catch (PDOException $e) {

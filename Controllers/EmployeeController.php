@@ -1,7 +1,17 @@
 <?php
 
+/**
+ * 
+ * Controlador para gestionar las operaciones relacionadas con los empleados en el sistema.
+ * Utiliza la capa de negocio BLemployee para realizar operaciones CRUD y otras acciones sobre los empleados.
+ */
 class EmployeeController
 {
+    /**
+     * Obtiene la lista de empleados activos.
+     * 
+     * Lista de empleados activos.
+     */
     static public function getUsersActive()
     {
         try {
@@ -14,6 +24,11 @@ class EmployeeController
         }
     }
 
+    /**
+     * Obtiene la lista de empleados inactivos.
+     * 
+     * Lista de empleados inactivos.
+     */
     static public function getUsersInactive()
     {
         try {
@@ -26,6 +41,12 @@ class EmployeeController
         }
     }
 
+    /**
+     * Obtiene la información de un empleado específico por su número de empleado.
+     * 
+     * $noEmpleado Número del empleado a obtener.
+     * Información del empleado.
+     */
     static public function getEmployee($noEmpleado)
     {
         try {
@@ -36,6 +57,11 @@ class EmployeeController
         }
     }
 
+    /**
+     * Obtiene la lista de todos los empleados.
+     * 
+     * Lista de todos los empleados.
+     */
     static public function getEmployeeAll()
     {
         try {
@@ -46,6 +72,11 @@ class EmployeeController
         }
     }
 
+    /**
+     * Bloquea (desactiva) un empleado específico.
+     * 
+     * $idEmpleado ID del empleado a bloquear.
+     */
     static public function blockEmployee($idEmpleado)
     {
         try {
@@ -56,6 +87,11 @@ class EmployeeController
         }
     }
 
+    /**
+     * Desbloquea (Activa) un empleado específico.
+     * 
+     * $idEmpleado ID del empleado a desbloquear.
+     */
     static public function unlockEmployee($idEmpleado)
     {
         try {
@@ -66,6 +102,11 @@ class EmployeeController
         }
     }
 
+    /**
+     * Elimina un empleado específico del sistema.
+     * 
+     * $idEmpleado ID del empleado a eliminar (No elimina el empleado de la BD).
+     */
     static public function deleteEmployee($idEmpleado)
     {
         try {
@@ -76,6 +117,11 @@ class EmployeeController
         }
     }
 
+    /**
+     * Obtiene la lista de roles disponibles para los empleados.
+     * 
+     * Lista de roles.
+     */
     static public function getRoles()
     {
         try {
@@ -87,6 +133,11 @@ class EmployeeController
         }
     }
 
+    /**
+     * Obtiene la lista de departamentos disponibles.
+     * 
+     * Lista de departamentos.
+     */
     static public function getdepartamento()
     {
         try {
@@ -98,6 +149,11 @@ class EmployeeController
         }
     }
 
+    /**
+     * Inserta un nuevo empleado en el sistema.
+     * 
+     * Redirige a la vista "Empleados" en caso de éxito.
+     */
     static public function postInsertColaboradores()
     {
         if (isset($_POST['registrar'])) {
@@ -138,6 +194,11 @@ class EmployeeController
         }
     }
 
+    /**
+     * Actualiza la información de un empleado existente.
+     * 
+     * Redirige a la vista "Empleados" en caso de éxito.
+     */
     static public function postUpdateColaborador()
     {
         if (isset($_POST['actualizar'])) {

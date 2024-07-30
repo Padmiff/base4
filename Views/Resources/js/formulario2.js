@@ -2,12 +2,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const steps = document.querySelectorAll('.form-step');
     let currentStep = 0;
     
-
-            document.addEventListener('DOMContentLoaded', function() {
-                loadDepartamentos();
-            });
-            
-            
+        // Generate unique folio and set it to read-only input
+        const folioInput = document.getElementById('folio');
+        if (folioInput) {
+            folioInput.value = generateUniqueFolio();
+            folioInput.readOnly = true; // Make the field read-only
+        }
 
             window.showStep = function (step) {
                 const formSteps = document.querySelectorAll('.form-step');
@@ -39,7 +39,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             window.showPreview = function () {
                 try {
-                    // Obtener los valores del formulario estáticos
                     const N_colaborador = document.getElementById('N_colaborador').value;
                     const departamento = document.getElementById('departamento').value;
                     const N_empleado = document.getElementById('N_empleado').value;
@@ -62,48 +61,46 @@ document.addEventListener('DOMContentLoaded', function () {
                     const nombre_recibe = document.getElementById('nombre_recibe').value;
                     const firma_recibe = document.getElementById('firma_recibe').value;
             
-                    // Obtener la tabla dinámica y su vista previa
                     const dynamicTable = document.getElementById('dynamicTable');
                     const preview_dynamicTable = document.getElementById('preview_dynamicTable');
             
-                    if (!dynamicTable) {
-                        throw new Error('No se encontró la tabla dinámica.');
+                    if (!dynamicTable || !preview_dynamicTable) {
+                        alert('Error al mostrar la vista previa. Por favor, revise la consola para más detalles.');
+                        return;
                     }
             
-                    if (!preview_dynamicTable) {
-                        throw new Error('No se encontró el contenedor para la vista previa de la tabla dinámica.');
-                    }
-            
-                    // Clonar el contenido de la tabla dinámica
                     const clonedTable = dynamicTable.cloneNode(true);
-            
-                    // Obtener el cuerpo de la tabla clonada
                     const clonedBody = clonedTable.querySelector('tbody');
             
-                    // Recorrer las filas de la tabla clonada y ajustar el contenido visible
+                    // Identificar la columna "Acción"
+                    const actionColIndex = Array.from(clonedTable.querySelectorAll('th')).findIndex(th => th.textContent.trim() === 'Acción');
+            
+                    if (actionColIndex !== -1) {
+                        // Eliminar la columna "Acción" de la cabecera
+                        clonedTable.querySelectorAll('thead th')[actionColIndex].remove();
+                        // Eliminar la columna "Acción" de todas las filas del cuerpo
+                        clonedTable.querySelectorAll('tbody tr').forEach(row => {
+                            row.querySelectorAll('td')[actionColIndex].remove();
+                        });
+                    }
+            
                     Array.from(clonedBody.rows).forEach(row => {
-                        // Recorrer las celdas de cada fila
                         Array.from(row.cells).forEach(cell => {
-                            // Reemplazar los elementos interactivos con su contenido estático
                             const interactiveElements = cell.querySelectorAll('input, textarea, select');
                             if (interactiveElements.length > 0) {
-                                // Limpiar las celdas de los elementos interactivos
                                 interactiveElements.forEach(element => {
                                     const textContent = element.tagName === 'INPUT' ? element.value : element.textContent;
                                     cell.textContent = textContent;
                                 });
                             }
-                            // Eliminar botones de eliminar en la tabla clonada
                             const deleteButtons = cell.querySelectorAll('.btn-danger');
                             deleteButtons.forEach(button => button.parentNode.removeChild(button));
                         });
                     });
             
-                    // Limpiar la tabla previa antes de agregar el nuevo contenido
                     preview_dynamicTable.innerHTML = '';
                     preview_dynamicTable.appendChild(clonedTable);
             
-                    // Establecer los valores estáticos en la vista previa
                     document.getElementById('preview_N_colaborador').textContent = N_colaborador;
                     document.getElementById('preview_departamento').textContent = departamento;
                     document.getElementById('preview_N_empleado').textContent = N_empleado;
@@ -126,17 +123,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById('preview_nombre_recibe').textContent = nombre_recibe;
                     document.getElementById('preview_firma_recibe').textContent = firma_recibe;
             
-                    // Ocultar todas las secciones del formulario
                     const formSteps = document.querySelectorAll('.form-step');
                     formSteps.forEach(step => step.style.display = 'none');
             
-                    // Mostrar la vista previa
                     document.getElementById('preview').style.display = 'block';
                 } catch (error) {
-                    console.error('Error en la función showPreview:', error.message);
                     alert('Ocurrió un error al mostrar la vista previa. Por favor, revise la consola para más detalles.');
                 }
             };
+            
 
             window.editForm = function () {
                 // Mostrar la primera sección del formulario y ocultar la vista previa
@@ -199,30 +194,38 @@ document.addEventListener('DOMContentLoaded', function () {
             
             
 
-            function updateDateTime() {
-                const now = new Date();
-                const date = now.toLocaleDateString();
-                const time = now.toLocaleTimeString();
-
-                const datetimeElement = document.getElementById('datetime');
-                if (datetimeElement) {
-                    datetimeElement.textContent = `${date} ${time}`;
-                }
-            }
-
-            function setFechaPedido() {
-                const now = new Date();
-                const fechaPedidoInput = document.getElementById('fecha_pedido');
-                fechaPedidoInput.value = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
-            }
-
-            setFechaPedido();
-            setInterval(updateDateTime, 1000);
-            updateDateTime();
+    function updateDateTime() {
+        const now = new Date();
+        const date = now.toLocaleDateString();
+        const time = now.toLocaleTimeString();
+    
+        const datetimeElement = document.getElementById('datetime');
+        if (datetimeElement) {
+            datetimeElement.textContent = `${date} ${time}`;
+        }
+    }
+    
+    function setFechaPedido() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // Los meses empiezan desde 0
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+    
+        const fechaPedido = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    
+        const fechaPedidoInput = document.getElementById('fecha_pedido');
+        fechaPedidoInput.value = fechaPedido;
+    }
+    
+    setFechaPedido();
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
 
 window.rowCount = 1; // Inicializa un contador de filas al cargar la página
 
-// Función para agregar una nueva fila a la tabla dinámica
 // Función para agregar una nueva fila a la tabla dinámica
         window.addRow = function() {
             const table = document.getElementById('dynamicTable');
@@ -230,7 +233,7 @@ window.rowCount = 1; // Inicializa un contador de filas al cargar la página
 
             const tbody = table.getElementsByTagName('tbody')[0];
             const lastRow = tbody.rows[tbody.rows.length - 1]; // Obtén la última fila actual
-            const lastRowCount = lastRow ? parseInt(lastRow.cells[0].querySelector('input[type="text"][name="numero"]').value) : 0;
+            const lastRowCount = lastRow ? parseInt(lastRow.cells[0].querySelector('input[type="text"][name="partida"]').value) : 0;
 
             const newRow = tbody.insertRow();
 
@@ -240,7 +243,7 @@ window.rowCount = 1; // Inicializa un contador de filas al cargar la página
             const cell4 = newRow.insertCell(3);
             const cell5 = newRow.insertCell(4);
 
-            cell1.innerHTML = `<input type="text" class="form-control" name="numero" value="${lastRowCount + 1}" readonly>`; // Usa el contador como valor
+            cell1.innerHTML = `<input type="text" class="form-control" name="partida" value="${lastRowCount + 1}" readonly>`; // Usa el contador como valor
             cell2.innerHTML = `<input type="number" class="form-control" name="cantidad[]" placeholder="Cantidad" min="0">`; // Agregado min="0" para evitar números negativos
             cell3.innerHTML = `<input type="text" class="form-control" name="unidad[]" placeholder="Unidad">`;
             cell4.innerHTML = `<input class="form-control" name="descripcion[]" placeholder="Descripción"></textarea>`;
@@ -278,20 +281,23 @@ window.rowCount = 1; // Inicializa un contador de filas al cargar la página
                     });
 
 
-        // Función para generar un folio único
-                function generateUniqueFolio() {
-                    // Obtener el último folio generado desde algún origen (base de datos, servidor, etc.)
-                    // En este ejemplo, supondremos que el último folio generado fue '105'
-                    let lastFolio = '50'; // Supongamos el último folio generado
-                
-                    // Extraer el contador del último folio generado y convertirlo a número entero
-                    let lastCounter = parseInt(lastFolio, 10);
-                
-                    // Incrementar el contador para generar el siguiente folio consecutivo
-                    let counter = lastCounter + 1;
-                
-                    return counter;
-                }
+                    function generateUniqueFolio() {
+                        // Obtener el contador actual de localStorage, si no existe, inicializarlo en 50
+                        let counter = localStorage.getItem('folioCounter');
+                        if (counter === null) {
+                            counter = 50; // Comenzar desde 50
+                        } else {
+                            counter = parseInt(counter, 10);
+                        }
+                    
+                        // Generar el folio único a partir del contador
+                        const folio = counter;
+                    
+                        // Incrementar el contador y guardarlo en localStorage
+                        localStorage.setItem('folioCounter', counter + 1);
+                    
+                        return folio;
+                    }
                 
                 document.addEventListener('DOMContentLoaded', function () {
                     const steps = document.querySelectorAll('.form-step');

@@ -30,18 +30,6 @@
                 </div>
             </div>
         </div>
-        <!-- <hr />
-        <div class="d-flex justify-content-between">
-            <div class="d-flex align-items-start"><img class="me-2" src="../assets/img/icons/left-arrow-from-left.svg" width="20" alt="" />
-                <div class="flex-1">
-                    <h5 class="fs-9">RTL Mode</h5>
-                    <p class="fs-10 mb-0">Switch your language direction </p><a class="fs-10" href="../documentation/customization/configuration.html">RTL Documentation</a>
-                </div>
-            </div>
-            <div class="form-check form-switch">
-                <input class="form-check-input ms-0" id="mode-rtl" type="checkbox" data-theme-control="isRTL" />
-            </div>
-        </div> -->
         <hr />
         <div class="d-flex justify-content-between">
             <div class="d-flex align-items-start"><img class="me-2" src="Views/Resources/assets/img/icons/arrows-h.svg" width="20" alt="" />
@@ -52,21 +40,6 @@
             </div>
             <div class="form-check form-switch">
                 <input class="form-check-input ms-0" id="mode-fluid" type="checkbox" data-theme-control="isFluid" />
-            </div>
-        </div>
-        <hr />
-        <div class="d-flex align-items-start"><img class="me-2" src="../assets/img/icons/paragraph.svg" width="20" alt="" />
-            <div class="flex-1">
-                <h5 class="fs-9 d-flex align-items-center">Posición de navegación</h5>
-                <p class="fs-10 mb-2">Seleccione un sistema de navegación adecuado para su aplicación web </p>
-                <div>
-                    <select class="form-select form-select-sm" aria-label="Navbar position" data-theme-control="navbarPosition">
-                        <option value="vertical" data-page-url="../modules/components/navs-and-tabs/vertical-navbar.html">Vertical</option>
-                        <option value="top" data-page-url="../modules/components/navs-and-tabs/top-navbar.html">Top</option>
-                        <option value="combo" data-page-url="../modules/components/navs-and-tabs/combo-navbar.html">Combo</option>
-                        <option value="double-top" data-page-url="../modules/components/navs-and-tabs/double-top-navbar.html">Double Top</option>
-                    </select>
-                </div>
             </div>
         </div>
         <hr />

@@ -1,11 +1,16 @@
 <?php
-require_once "Connection.php";
+require_once "Connection.php"; //Conexion con la BD
 
 class ContacsClients
 {
 
     private static $conn;
 
+    /**
+     * Obtiene una instancia de conexión a la base de datos.
+     *
+     * La conexión a la base de datos.
+     */
     private static function getConnection()
     {
         if (!isset(self::$conn)) {
@@ -14,12 +19,16 @@ class ContacsClients
         return self::$conn;
     }
 
+    /**
+     * Inserta un nuevo contacto en la base de datos.
+     *
+     * $datos Array asociativo con la información del nuevo contacto.
+     * El ID del contacto insertado.
+     * En caso de error al agregar el contacto.
+     */
     static public function BLpostInsertContactos($datos)
     {
         try {
-            if (self::BLverificarCorreoExistente($datos['email'])) {
-                throw new Exception('El correo ya está registrado.');
-            }
 
             $conn = self::getConnection();
 
@@ -37,11 +46,19 @@ class ContacsClients
             $stmt->bindParam(':estadoContacto', $datos['estadoContacto']);
 
             $stmt->execute();
+            return $conn->lastInsertId();
         } catch (PDOException $e) {
             throw new Exception('Error al agregar Contacto: ' . $e->getMessage());
         }
     }
 
+    /**
+     * Actualiza la contraseña de un contacto.
+     *
+     * $password La nueva contraseña en texto plano.
+     * $idContacto El ID del contacto cuya contraseña se actualizará.
+     * En caso de error al actualizar la contraseña.
+     */
     static public function BLpasswordContacto($password, $idContacto)
     {
         try {
@@ -63,39 +80,35 @@ class ContacsClients
         }
     }
 
-    static public function obtenerIdUsuarioDesdeElCorreo($email)
-    {
-        $conn = self::getConnection();
-
-        $sql = "SELECT idContacto FROM contactocliente WHERE email = :email";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($row) {
-            return $row['idContacto'];
-        } else {
-            throw new Exception("No se encontró ningún usuario con el correo electrónico proporcionado.");
-        }
-    }
-
+    /**
+     * Verifica si un correo electrónico ya está registrado en la base de datos.
+     *
+     * $email El correo electrónico a verificar.
+     * True si el correo ya está registrado, false en caso contrario.
+     * En caso de error en la consulta.
+     */
     static public function BLverificarCorreoExistente($email)
     {
         try {
             $conn = self::getConnection();
-            $sql = "SELECT COUNT(*) FROM contactocliente WHERE email = :email";
+            $sql = "SELECT COUNT(*) FROM contactocliente WHERE email = :email AND estadoContacto = 'Activo'";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':email', $email);
             $stmt->execute();
-            $count = $stmt->fetchColumn();
+            $count = $stmt->fetchColumn() > 0;
 
-            return $count > 0;
+            return $count;
         } catch (PDOException $e) {
             throw new Exception('Error al verificar el correo: ' . $e->getMessage());
         }
     }
 
+    /**
+     * Actualiza la información de un contacto existente.
+     *
+     * $datos Array asociativo con la información actualizada del contacto, incluyendo el ID.
+     * En caso de error al actualizar el contacto.
+     */
     static public function BLpostUpdateContact($datos)
     {
         try {
@@ -120,6 +133,12 @@ class ContacsClients
         }
     }
 
+    /**
+     * Marca un contacto como eliminado.
+     *
+     * $idContacto El ID del contacto a eliminar.
+     * En caso de error en la consulta.
+     */
     static public function BLdeleteContacts($idContacto)
     {
         try {
