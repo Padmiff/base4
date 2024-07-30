@@ -74,13 +74,7 @@ class ContactsProvidersController
         $mail = new PHPMailer(true);
 
         try {
-            $mail->isSMTP();
-            $mail->Host       = 'smtp.ionos.mx'; // Servidor SMTP
-            $mail->SMTPAuth   = true; // Habilitar autenticación SMTP
-            $mail->Username   = 'servicios@correo.base4.mx'; // Usuario SMTP
-            $mail->Password   = '0202ChubacaC'; // Contraseña SMTP (debe almacenarse de forma segura)
-            $mail->SMTPSecure = 'ssl'; // Habilitar cifrado SSL
-            $mail->Port       = 465; // Puerto TCP para conectar
+           //Configuracion del servidor SMPT
 
             $mail->setFrom('servicios@correo.base4.mx', 'base4');
             $mail->addAddress($correoDestinatario);
